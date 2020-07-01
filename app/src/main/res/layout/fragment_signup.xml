@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/yellow_darker"
+    tools:context="com.ms.quokkaism.ui.signup.SignupFragment">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/signup_man_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_man"
+        app:layout_constraintTop_toBottomOf="@id/signup_repeat_password_et"
+        android:layout_marginTop="48dp"
+        app:layout_constraintStart_toStartOf="@id/signup_name_et"
+        android:layout_marginStart="28dp"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/signup_back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/button_height_min"
+        android:minWidth="@dimen/button_height_min"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="?selectableItemBackground"
+        app:tint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_arrow_white"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/signup_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceHeadline2"
+        android:text="@string/signup"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/signup_back_btn"
+        app:layout_constraintBottom_toBottomOf="@id/signup_back_btn" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/signup_name_et"
+        style="?textAppearanceBody1"
+        android:textAppearance="?textAppearanceBody1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/edit_text_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signup_title_tv"
+        android:gravity="center"
+        android:textColorHint="@color/gray"
+        android:hint="@string/name"
+        android:inputType="textPersonName"
+        android:layout_marginTop="24dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginStart="28dp"
+        android:background="@drawable/shape_rounded_25dp_white"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/signup_email_et"
+        style="?textAppearanceBody1"
+        android:textAppearance="?textAppearanceBody1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/edit_text_height"
+        app:layout_constraintStart_toStartOf="@id/signup_name_et"
+        app:layout_constraintEnd_toEndOf="@id/signup_name_et"
+        app:layout_constraintTop_toBottomOf="@id/signup_name_et"
+        android:gravity="center"
+        android:textColorHint="@color/gray"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:layout_marginTop="20dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:background="@drawable/shape_rounded_25dp_white"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/signup_password_et"
+        style="?textAppearanceBody1"
+        android:textAppearance="?textAppearanceBody1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/edit_text_height"
+        app:layout_constraintStart_toStartOf="@id/signup_name_et"
+        app:layout_constraintEnd_toEndOf="@id/signup_name_et"
+        app:layout_constraintTop_toBottomOf="@id/signup_email_et"
+        android:gravity="center"
+        android:textColorHint="@color/gray"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:layout_marginTop="20dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:background="@drawable/shape_rounded_25dp_white"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/signup_repeat_password_et"
+        style="?textAppearanceBody1"
+        android:textAppearance="?textAppearanceBody1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/edit_text_height"
+        app:layout_constraintStart_toStartOf="@id/signup_name_et"
+        app:layout_constraintEnd_toEndOf="@id/signup_name_et"
+        app:layout_constraintTop_toBottomOf="@id/signup_password_et"
+        android:gravity="center"
+        android:textColorHint="@color/gray"
+        android:hint="@string/repeat_password"
+        android:inputType="textPassword"
+        android:layout_marginTop="20dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:background="@drawable/shape_rounded_25dp_white"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/signup_have_account_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textAppearance="?attr/textAppearanceCaption"
+        android:text="@string/i_have_account_already"
+        app:layout_constraintStart_toStartOf="@id/signup_btn_layout"
+        app:layout_constraintEnd_toEndOf="@id/signup_btn_layout"
+        app:layout_constraintBottom_toTopOf="@id/signup_btn_layout"/>
+
+
+    <LinearLayout
+        android:id="@+id/signup_btn_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/signup_name_et"
+        app:layout_constraintEnd_toEndOf="@id/signup_name_et"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="28dp">
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/signup_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_button_height_default"
+            app:cornerRadius="28dp"
+            style="?textAppearanceHeadline2"
+            android:text="@string/submit"
+            app:backgroundTint="@color/white"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

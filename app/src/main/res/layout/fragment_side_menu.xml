@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.sidemenu.SideMenuFragment">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/side_menu_profile_iv"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        app:srcCompat="@drawable/ic_profile"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/side_menu_name_tv"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/side_menu_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceHeadline3"
+        tools:text="meysam"
+        android:layout_marginStart="20dp"
+        app:layout_constraintTop_toTopOf="@id/side_menu_profile_iv"
+        app:layout_constraintBottom_toBottomOf="@id/side_menu_profile_iv"
+        app:layout_constraintStart_toEndOf="@id/side_menu_profile_iv" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/side_menu_view_profile_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceCaption"
+        tools:text="@string/view_my_profile"
+        app:layout_constraintTop_toBottomOf="@id/side_menu_name_tv"
+        app:layout_constraintBottom_toBottomOf="@id/side_menu_profile_iv"
+        app:layout_constraintStart_toStartOf="@id/side_menu_name_tv" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/side_menu_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toBottomOf="@id/side_menu_profile_iv"
+        android:layout_marginTop="36dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

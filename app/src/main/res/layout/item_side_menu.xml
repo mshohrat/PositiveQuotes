@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.textview.MaterialTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/button_height_default"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:textAppearance="?textAppearanceHeadline3"
+    android:background="@drawable/selector_side_menu_item"
+    android:textColor="@color/selector_side_menu_item"
+    android:gravity="center_vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    tools:text="Home">
+
+</com.google.android.material.textview.MaterialTextView>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/item_quote_fullscreen_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceHeadline1"
+        tools:text="این متن برای تست است. تا وقتی که میتوانید بروید"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/item_quote_fullscreen_author"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_margin="24dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/item_quote_fullscreen_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceBody1"
+        android:textColor="@color/gray"
+        tools:text="میثم شهرت"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_quote_fullscreen_text"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/item_quote_fullscreen_share_btn"
+        android:layout_width="@dimen/button_height_min"
+        android:layout_height="@dimen/button_height_min"
+        android:background="?selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/item_quote_fullscreen_copy_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:srcCompat="@drawable/ic_share"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/item_quote_fullscreen_copy_btn"
+        android:layout_width="@dimen/button_height_min"
+        android:layout_height="@dimen/button_height_min"
+        android:background="?selectableItemBackground"
+        app:srcCompat="@drawable/ic_copy"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintStart_toEndOf="@id/item_quote_fullscreen_share_btn"
+        app:layout_constraintEnd_toStartOf="@id/item_quote_fullscreen_like_btn"
+        app:layout_constraintTop_toTopOf="@id/item_quote_fullscreen_share_btn"
+        app:layout_constraintBottom_toBottomOf="@id/item_quote_fullscreen_share_btn" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/item_quote_fullscreen_like_btn"
+        android:layout_width="@dimen/button_height_min"
+        android:layout_height="@dimen/button_height_min"
+        android:background="?selectableItemBackground"
+        app:srcCompat="@drawable/ic_like"
+        app:layout_constraintStart_toEndOf="@id/item_quote_fullscreen_copy_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/item_quote_fullscreen_share_btn"
+        app:layout_constraintBottom_toBottomOf="@id/item_quote_fullscreen_share_btn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

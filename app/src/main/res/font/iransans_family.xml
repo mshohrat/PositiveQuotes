@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedAttribute">
+    <font
+        app:font="@font/iran_sans_bold"
+        app:fontWeight="700"
+        android:font="@font/iran_sans_bold"
+        android:fontWeight="700" />
+    <font
+        app:font="@font/iran_sans_medium"
+        app:fontWeight="500"
+        android:font="@font/iran_sans_medium"
+        android:fontWeight="500" />
+    <font
+        app:font="@font/iran_sans_regular"
+        app:fontWeight="400"
+        android:font="@font/iran_sans_regular"
+        android:fontWeight="400" />
+</font-family>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "629646327514",
+    "firebase_url": "https://quokkaism.firebaseio.com",
+    "project_id": "quokkaism",
+    "storage_bucket": "quokkaism.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629646327514:android:87c05c4bb56c978610efe3",
+        "android_client_info": {
+          "package_name": "com.ms.quokkaism"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629646327514-sd3vtkoj2c2vrritngplrrf200r8dc7i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnGMuxQPTB-95gned_rEsgGbm6cfW3aAk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629646327514-sd3vtkoj2c2vrritngplrrf200r8dc7i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

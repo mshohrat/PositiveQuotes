@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/item_liked_quote_text_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            style="?attr/textAppearanceHeadline3"
+            tools:text="test test test test"
+            android:gravity="center_vertical|end"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/item_liked_quote_author_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/item_liked_quote_text_tv"
+            style="?attr/textAppearanceBody1"
+            android:textColor="@color/gray"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="test"
+            android:gravity="center_vertical|end"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/liked_quote_share_btn"
+            android:layout_width="@dimen/button_height_small"
+            android:layout_height="@dimen/button_height_small"
+            android:background="?selectableItemBackground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/liked_quote_copy_btn"
+            app:layout_constraintTop_toBottomOf="@id/item_liked_quote_author_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:srcCompat="@drawable/ic_share_24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/liked_quote_copy_btn"
+            android:layout_width="@dimen/button_height_small"
+            android:layout_height="@dimen/button_height_small"
+            android:background="?selectableItemBackground"
+            app:srcCompat="@drawable/ic_copy_24dp"
+            app:layout_constraintStart_toEndOf="@id/liked_quote_share_btn"
+            app:layout_constraintEnd_toStartOf="@id/liked_quote_like_btn"
+            app:layout_constraintTop_toTopOf="@id/liked_quote_share_btn"
+            app:layout_constraintBottom_toBottomOf="@id/liked_quote_share_btn"
+            android:layout_marginEnd="8dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/liked_quote_like_btn"
+            android:layout_width="@dimen/button_height_small"
+            android:layout_height="@dimen/button_height_small"
+            android:background="?selectableItemBackground"
+            app:srcCompat="@drawable/ic_like_24dp"
+            app:layout_constraintStart_toEndOf="@id/liked_quote_copy_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/liked_quote_share_btn"
+            app:layout_constraintBottom_toBottomOf="@id/liked_quote_share_btn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>

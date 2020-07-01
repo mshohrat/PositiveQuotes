@@ -1,0 +1,146 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+
+final VERSION_NAME = "1.0.0"
+final VERSION_CODE = 1
+
+final retrofitVersion = "2.6.4"
+final okhttpVersion = "3.12.8"
+final rxjava = "2.2.10"
+final rxandroid = "2.1.1"
+final gson = "2.8.5"
+final navigation = "2.3.0-beta01"
+final android_lifecycle = "2.2.0"
+final room_version = "2.2.5"
+final hawk = "2.0.1"
+
+android {
+    flavorDimensions "main"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.ms.quokkaism"
+        multiDexEnabled true
+        minSdkVersion 17
+        targetSdkVersion 29
+        versionCode VERSION_CODE
+        versionName "$VERSION_NAME"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFile 'proguard-rules.pro'
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+
+    buildTypes {
+        debug {
+
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        bazaar {
+            dimension "main"
+            buildConfigField 'String', 'STORE_NAME', '"cafebazaar"'
+            buildConfigField 'String', 'SERVER_ADDRESS', '"http://quokka-app.ir/"'
+            buildConfigField 'String', 'CLIENT_ID', '"2"'
+            buildConfigField 'String', 'CLIENT_SECRET', '"Nm5wrL3ZtFGRWCnFp4xpC6nc7k24fZKa60jNm6DQ"'
+        }
+        googlePlay {
+            dimension "main"
+            buildConfigField 'String', 'STORE_NAME', '"playstore"'
+            buildConfigField 'String', 'SERVER_ADDRESS', '"http://quokka-app.ir/"'
+            buildConfigField 'String', 'CLIENT_ID', '"2"'
+            buildConfigField 'String', 'CLIENT_SECRET', '"Nm5wrL3ZtFGRWCnFp4xpC6nc7k24fZKa60jNm6DQ"'
+        }
+    }
+
+// To inline the bytecode built with JVM target 1.8 into
+// bytecode that is being built with JVM target 1.6. (e.g. navArgs)
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+//        annotationProcessorOptions {
+//            arguments = ["room.schemaLocation":
+//                                 "$projectDir/schemas".toString()]
+//        }
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation "androidx.lifecycle:lifecycle-extensions:$android_lifecycle"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+    implementation "com.google.code.gson:gson:$gson"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid"
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava"
+
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$navigation"
+
+    //implementation "android.arch.lifecycle:extensions:$android_lifecycle"
+    //kapt "android.arch.lifecycle:compiler:$android_lifecycle"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    // For Kotlin use kapt instead of annotationProcessor
+
+    implementation "androidx.room:room-ktx:$room_version"
+
+    implementation "androidx.room:room-rxjava2:$room_version"
+
+    implementation "androidx.room:room-guava:$room_version"
+
+    implementation "com.orhanobut:hawk:$hawk"
+
+    implementation 'com.google.firebase:firebase-analytics:15.0.0'
+    //implementation 'com.google.firebase:firebase-messaging:12.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-messaging:18.0.0'
+}
+
+repositories {
+    mavenCentral()
+}

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/peach"
+    tools:context="com.ms.quokkaism.ui.setting.SettingFragment">
+
+    <View
+        android:id="@+id/setting_bg_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/setting_title_tv"
+        android:layout_marginTop="42dp"
+        android:background="@drawable/shape_top_left_rounded_30dp_white"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_woman_happy"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="24dp"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/setting_menu_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/button_height_min"
+        android:minWidth="@dimen/button_height_min"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="?selectableItemBackground"
+        app:tint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_menu"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/setting_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceHeadline2"
+        android:text="@string/setting"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/setting_menu_btn"
+        app:layout_constraintBottom_toBottomOf="@id/setting_menu_btn"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/setting_save_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textAppearance="?attr/textAppearanceCaption"
+        android:textColor="@color/colorPrimary"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:text="@string/save"
+        app:layout_constraintTop_toTopOf="@id/setting_menu_btn"
+        app:layout_constraintBottom_toBottomOf="@id/setting_menu_btn"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/setting_description_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceHeadline3"
+        android:text="@string/receive_notifications_setting"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/setting_bg_view"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="16dp"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/setting_time_rv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/setting_description_tv"
+        tools:listitem="@layout/item_setting_time"
+        tools:itemCount="6"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        app:spanCount="3"
+        android:layout_marginTop="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

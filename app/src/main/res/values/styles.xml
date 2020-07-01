@@ -1,0 +1,112 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="textAppearanceHeadline1">@style/Headline1.FixSize</item>
+        <item name="textAppearanceHeadline2">@style/Headline2.FixSize</item>
+        <item name="textAppearanceHeadline3">@style/Headline3.FixSize</item>
+        <item name="textAppearanceHeadline4">@style/Headline4.FixSize</item>
+        <item name="textAppearanceBody1">@style/Body1.FixSize</item>
+        <item name="textAppearanceCaption">@style/Caption.FixSize</item>
+        <item name="android:textDirection">locale</item>
+        <item name="android:fontFamily">@font/iransans_family</item>
+        <item name="fontFamily">@font/iransans_family</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <!-- Headline -->
+    <style name="Headline1" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:fontFamily">@font/iran_sans_bold</item>
+        <item name="fontFamily">@font/iran_sans_bold</item>
+        <item name="android:textColor">?colorPrimary</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Headline1.AutoSize" parent="Headline1">
+        <item name="autoSizeMaxTextSize">@dimen/headline_1_max_text_size</item>
+        <item name="autoSizeMinTextSize">@dimen/headline_1_min_text_size</item>
+        <item name="autoSizeTextType">uniform</item>
+    </style>
+
+    <style name="Headline1.FixSize" parent="Headline1">
+        <item name="android:textSize">@dimen/headline_1_max_text_size</item>
+    </style>
+
+    <style name="Headline2.AutoSize" parent="Headline1">
+        <item name="autoSizeMaxTextSize">@dimen/headline_2_max_text_size</item>
+        <item name="autoSizeMinTextSize">@dimen/headline_2_min_text_size</item>
+    </style>
+
+    <style name="Headline2.FixSize" parent="Headline1">
+        <item name="android:textSize">@dimen/headline_2_max_text_size</item>
+    </style>
+
+    <style name="Headline3.AutoSize" parent="Headline1">
+        <item name="autoSizeMaxTextSize">@dimen/headline_3_max_text_size</item>
+        <item name="autoSizeMinTextSize">@dimen/headline_3_min_text_size</item>
+    </style>
+
+    <style name="Headline3.FixSize" parent="Headline1">
+        <item name="android:textSize">@dimen/headline_3_max_text_size</item>
+    </style>
+
+    <style name="Headline4.AutoSize" parent="Headline1">
+        <item name="autoSizeMaxTextSize">@dimen/headline_4_max_text_size</item>
+        <item name="autoSizeMinTextSize">@dimen/headline_4_min_text_size</item>
+    </style>
+
+    <style name="Headline4.FixSize" parent="Headline1">
+        <item name="android:textSize">@dimen/headline_4_max_text_size</item>
+    </style>
+
+    <!-- Body -->
+    <style name="Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:fontFamily">@font/iran_sans_regular</item>
+        <item name="fontFamily">@font/iran_sans_regular</item>
+        <item name="android:textColor">?colorPrimary</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Body1.AutoSize" parent="Body1">
+        <item name="autoSizeMaxTextSize">@dimen/body_1_max_text_size</item>
+        <item name="autoSizeMinTextSize">@dimen/body_1_min_text_size</item>
+        <item name="autoSizeTextType">uniform</item>
+    </style>
+
+    <style name="Body1.FixSize" parent="Body1">
+        <item name="android:textSize">@dimen/body_1_max_text_size</item>
+    </style>
+
+
+    <!-- Caption -->
+    <style name="Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:fontFamily">@font/iran_sans_regular</item>
+        <item name="fontFamily">@font/iran_sans_regular</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Caption.AutoSize" parent="Caption">
+        <item name="autoSizeMaxTextSize">@dimen/caption_max_text_size</item>
+        <item name="autoSizeMinTextSize">@dimen/caption_min_text_size</item>
+        <item name="autoSizeTextType">uniform</item>
+    </style>
+
+    <style name="Caption.FixSize" parent="Caption">
+        <item name="android:textSize">@dimen/caption_max_text_size</item>
+    </style>
+
+</resources>
