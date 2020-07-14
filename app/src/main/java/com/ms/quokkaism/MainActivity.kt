@@ -19,40 +19,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
 
-    //private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //main_content_bg?.background = RoundedDrawable()
-
         main_content_frame?.setOnClickListener {
             if(isSideMenuOpened())
             {
                 closeSideMenu()
             }
         }
-
-        //showSideMenu();
-
-//        val toolbar: Toolbar = findViewById(R.id.toolbar)
-//        setSupportActionBar(toolbar)
-//
-//        val fab: FloatingActionButton = findViewById(R.id.fab)
-//        fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
-//        }
-//        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-//        val navView: NavigationView = findViewById(R.id.nav_view)
-//        val navController = findNavController(R.id.nav_host_fragment)
-//        // Passing each menu ID as a set of Ids because each
-//        // menu should be considered as top level destinations.
-//        appBarConfiguration = AppBarConfiguration(setOf(
-//                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
         subscribeToViewChanges()
     }
 
@@ -98,7 +74,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             val mainCornerAnimator = ValueAnimator.ofFloat(0f,convertDpToPixel(this,30f))
             mainCornerAnimator.addUpdateListener {
                 val value = it.animatedValue as Float
-                //main_content_bg?.radius = value
                 main_content_frame?.radius = value
             }
             val mainScaleAnimator = ValueAnimator.ofFloat(1f,0.8f)
@@ -213,7 +188,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                         navigateUpFragment()
                     }
                 } ?: kotlin.run {
-                    //unsubscribeToViewChanges()
                     super.onBackPressed()
                 }
             }
@@ -225,7 +199,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         val navController = findNavController(R.id.main_content_nav_host)
         if(navController.currentDestination?.id == navController.graph.startDestination)
         {
-            //unsubscribeToViewChanges()
             super.onBackPressed()
         }
         else {
@@ -239,7 +212,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     fun setMainBackgroundColor(@ColorInt color : Int)
     {
-        //main_content_frame?.bgColor = color
     }
 
     override fun onDestinationChanged(
@@ -258,8 +230,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
     }
 
-//    override fun onSupportNavigateUp(): Boolean {
-//        val navController = findNavController(R.id.main_content_nav_host)
-//        return navController.navigateUp() || super.onSupportNavigateUp()
-//    }
+    fun reloadSideMenu() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_side_menu_frame,SideMenuFragment())
+            .commit()
+    }
 }

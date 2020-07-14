@@ -3,29 +3,23 @@ package com.ms.quokkaism.ui.liked_quotes.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ms.quokkaism.R
-import com.ms.quokkaism.db.Quote
+import com.ms.quokkaism.db.model.Quote
 import kotlinx.android.synthetic.main.item_liked_quote.view.*
 
 class LikedQuotesAdapter(
-    private val likedQuotesList: MutableList<Quote?>,
     private val onItemClickListener: OnItemClickListener? = null
-): RecyclerView.Adapter<LikedQuotesAdapter.ViewHolder>() {
+): PagedListAdapter<Quote?,LikedQuotesAdapter.ViewHolder>(LikedQuotesDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_liked_quote,parent,false))
     }
 
-    override fun getItemCount(): Int {
-        return likedQuotesList.size
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(likedQuotesList.size <= position) {
-            return
-        }
-        val item = likedQuotesList[position]
+        val item = getItem(position)
         item?.let {
             holder.textTv?.text = it.text
             it.author?.let { author ->
@@ -40,13 +34,13 @@ class LikedQuotesAdapter(
             holder.shareBtn?.setOnClickListener {
                 onItemClickListener?.onItemShareClick(
                     holder.adapterPosition,
-                    likedQuotesList[holder.adapterPosition]
+                    getItem(holder.adapterPosition)
                 )
             }
             holder.copyBtn?.setOnClickListener {
                 onItemClickListener?.onItemCopyClick(
                     holder.adapterPosition,
-                    likedQuotesList[holder.adapterPosition]
+                    getItem(holder.adapterPosition)
                 )
             }
             holder.likeBtn?.setOnClickListener {v ->
@@ -61,46 +55,46 @@ class LikedQuotesAdapter(
         }
     }
 
-    fun updateItems(likedQuotesList: MutableList<Quote?>?) {
-        likedQuotesList?.let {
-            this.likedQuotesList.addAll(it)
-            notifyDataSetChanged()
-        }
-    }
+//    fun updateItems(likedQuotesList: MutableList<Quote?>?) {
+//        likedQuotesList?.let {
+//            this.likedQuotesList.addAll(it)
+//            notifyDataSetChanged()
+//        }
+//    }
 
-    fun likeItemAt(position: Int) {
-        if(likedQuotesList.size > position) {
-            val item = likedQuotesList[position]
-            item?.let {
-                it.isFavorite = 1
-                notifyDataSetChanged()
-            }
-        }
-    }
-
-    fun dislikeItemAt(position: Int) {
-        if(likedQuotesList.size > position) {
-            val item = likedQuotesList[position]
-            item?.let {
-                it.isFavorite = 0
-                notifyDataSetChanged()
-            }
-        }
-    }
-
-    fun revertLikeItem(position: Int) {
-        if(likedQuotesList.size > position) {
-            val item = likedQuotesList[position]
-            item?.let {
-                if(it.isLiked()) {
-                    it.isFavorite = 0
-                } else {
-                    it.isFavorite = 1
-                }
-                notifyDataSetChanged()
-            }
-        }
-    }
+//    fun likeItemAt(position: Int) {
+//        if(likedQuotesList.size > position) {
+//            val item = likedQuotesList[position]
+//            item?.let {
+//                it.isFavorite = 1
+//                notifyDataSetChanged()
+//            }
+//        }
+//    }
+//
+//    fun dislikeItemAt(position: Int) {
+//        if(likedQuotesList.size > position) {
+//            val item = likedQuotesList[position]
+//            item?.let {
+//                it.isFavorite = 0
+//                notifyDataSetChanged()
+//            }
+//        }
+//    }
+//
+//    fun revertLikeItem(position: Int) {
+//        if(likedQuotesList.size > position) {
+//            val item = likedQuotesList[position]
+//            item?.let {
+//                if(it.isLiked()) {
+//                    it.isFavorite = 0
+//                } else {
+//                    it.isFavorite = 1
+//                }
+//                notifyDataSetChanged()
+//            }
+//        }
+//    }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val textTv = itemView.item_liked_quote_text_tv
@@ -115,4 +109,16 @@ class LikedQuotesAdapter(
         fun onItemCopyClick(position: Int, likedQuote: Quote?)
         fun onItemLikeClick(position: Int, likedQuote: Quote?)
     }
+}
+
+class LikedQuotesDiffCallback: DiffUtil.ItemCallback<Quote?>() {
+
+    override fun areItemsTheSame(oldItem: Quote, newItem: Quote): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Quote, newItem: Quote): Boolean {
+        return oldItem == newItem
+    }
+
 }

@@ -2,13 +2,20 @@ package com.ms.quokkaism
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import com.ms.quokkaism.db.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class NotificationPublisher : BroadcastReceiver() {
 
@@ -19,31 +26,45 @@ class NotificationPublisher : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val quoteLiveData = AppDatabase.getAppDataBase()?.quoteDao()?.getLastReadQuote()
-        quoteLiveData?.value?.let { quote ->
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                val lastUnreadQuote = AppDatabase.getAppDataBase()?.quoteDao()?.getFirstUnreadQuote()
+                lastUnreadQuote?.let { quote ->
+                    val notificationManager = NotificationManagerCompat.from(context)
+                    handleNotificationChannel(notificationManager)
 
-            val notificationManager = NotificationManagerCompat.from(context)
-            handleNotificationChannel(notificationManager)
-            val notification = if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                NotificationCompat.Builder(context)
-                    .setColor(context.resources.getColor(R.color.peach_orange))
-                    .setContentText(quote.text)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setShowWhen(true)
-                    .setAutoCancel(true)
-                    .setSubText(quote.author)
-                    .build()
-            } else {
-                NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_NAME)
-                    .setColor(context.getColor(R.color.peach_orange))
-                    .setShowWhen(true)
-                    .setContentText(quote.text)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setAutoCancel(true)
-                    .setSubText(quote.author)
-                    .build()
+                    val notificationBuilder = if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                        NotificationCompat.Builder(context)
+                    } else {
+                        NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+                    }
+                    notificationBuilder
+                        .setStyle(NotificationCompat.BigTextStyle().bigText(
+                            quote.text)
+                            .setBigContentTitle(context.getString(R.string.app_name))
+                        )
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setShowWhen(true)
+                        .setAutoCancel(true)
+
+                    val resultIntent = Intent(context, MainActivity::class.java)
+                    resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(context)
+                    stackBuilder.addParentStack(MainActivity::class.java)
+                    stackBuilder.addNextIntent(resultIntent)
+
+                    val resultPendingIntent = stackBuilder.getPendingIntent(
+                        0, PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                    notificationBuilder.setContentIntent(resultPendingIntent)
+
+                    notificationManager.notify(Math.random().times(1000).toInt(),notificationBuilder.build())
+
+                    quote.id?.let {
+                        AppDatabase.getAppDataBase()?.quoteDao()?.updateQuoteIsRead(it,1)
+                    }
+                }
             }
-            notificationManager.notify(Math.random().times(1000).toInt(),notification)
         }
     }
 

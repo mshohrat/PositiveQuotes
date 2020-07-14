@@ -4,50 +4,50 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.ms.quokkaism.R
 import com.ms.quokkaism.db.AppDatabase
-import com.ms.quokkaism.db.Quote
+import com.ms.quokkaism.db.model.LikeAction
+import com.ms.quokkaism.db.model.Quote
+import com.ms.quokkaism.extension.isDeviceOnline
 import com.ms.quokkaism.network.base.ApiServiceGenerator
 import com.ms.quokkaism.network.model.GeneralResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 
 class LikedQuotesViewModel : ViewModel() {
     
     private var currentServerPage = 0
     private var totalServerPages = 1
 
-    private var localOffset = 0
-    private var localPageSize = 10
-
-    private val _likedQuotes = MutableLiveData<MutableList<Quote?>>()
-    val likedQuotes : LiveData<MutableList<Quote?>> = _likedQuotes
+    lateinit var _likedQuotes : LiveData<PagedList<Quote?>>
 
     private val _likedQuotesError = MutableLiveData<GeneralResponse?>()
     val likedQuotesError : LiveData<GeneralResponse?> = _likedQuotesError
 
-    private val _like = MutableLiveData<Pair<Int,Boolean>>()
-    val like : LiveData<Pair<Int,Boolean>> = _like
-
-    private val _likeError = MutableLiveData<Int>()
-    val likeError : LiveData<Int> = _likeError
-
-    fun getLikedQuotes()
-    {
-        AppDatabase.getAppDataBase()?.quoteDao()?.getLikedQuotes(localOffset,localPageSize)?.value?.takeIf {
-            it.isNotEmpty()
-        }?.let {
-            it.forEach {
-                _likedQuotes.value?.add(it)
-            }
-            localOffset.plus(it.size)
+    init {
+        val factory = AppDatabase.getAppDataBase()?.quoteDao()?.getLikedQuotes()
+        factory?.let {
+            val config = PagedList.Config.Builder()
+                .setInitialLoadSizeHint(20)
+                .setPageSize(20)
+                .setPrefetchDistance(5)
+                .setEnablePlaceholders(false)
+                .build()
+            val pagedListBuilder: LivePagedListBuilder<Int, Quote?> = LivePagedListBuilder<Int, Quote?>(it, config)
+            pagedListBuilder.setBoundaryCallback(LikedQuotesBoundaryCallback())
+            _likedQuotes = pagedListBuilder.build()
         } ?: kotlin.run {
-            fetchLikedQuotes()
+            _likedQuotes = MutableLiveData()
         }
     }
 
     @SuppressLint("CheckResult")
-    fun fetchLikedQuotes()
+    internal fun fetchLikedQuotes()
     {
         if(currentServerPage < totalServerPages)
         {
@@ -63,11 +63,19 @@ class LikedQuotesViewModel : ViewModel() {
                             val list = mutableListOf<Quote>()
                             it.forEach{
                                 it?.text?.let { text ->
-                                    list.add(Quote(it.id,text,it.author,isFavorite = 1))
+                                    list.add(
+                                        Quote(
+                                            it.id,
+                                            text,
+                                            it.author,
+                                            isFavorite = 1
+                                        )
+                                    )
                                 }
                             }
-                            _likedQuotes.value?.addAll(list)
-                            AppDatabase.getAppDataBase()?.quoteDao()?.insertQuotes(list)
+                            viewModelScope.launch {
+                                AppDatabase.getAppDataBase()?.quoteDao()?.insertQuotes(list)
+                            }
                         }
                     } ?: kotlin.run {
                         _likedQuotesError.value = GeneralResponse(messageResId = R.string.failed_to_connect_server)
@@ -81,39 +89,88 @@ class LikedQuotesViewModel : ViewModel() {
 
     @SuppressLint("CheckResult")
     fun like(position:Int, quote: Quote) {
+        likeQuote(quote)
         quote.id?.let { id ->
-            ApiServiceGenerator.getApiService.like(id)
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe({
-                    it?.let {
-                        AppDatabase.getAppDataBase()?.quoteDao()?.updateQuote(quote.apply { isFavorite = 1 })
-                        _like.value = position to true
-                    } ?: kotlin.run {
-                        _likeError.value = position
-                    }
-                }, {
-                    _likeError.value = position
-                })
+            if(isDeviceOnline()) {
+                ApiServiceGenerator.getApiService.like(id)
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe({
+
+                    }, {
+                        dislikeQuote(quote)
+                    })
+            }
+            else
+            {
+                addLikeAction(id)
+            }
         }
     }
 
     @SuppressLint("CheckResult")
     fun dislike(position:Int, quote: Quote) {
+        dislikeQuote(quote)
         quote.id?.let { id ->
-            ApiServiceGenerator.getApiService.dislike(id)
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe({
-                    it?.let {
-                        AppDatabase.getAppDataBase()?.quoteDao()?.updateQuote(quote.apply { isFavorite = 0 })
-                        _like.value = position to false
-                    } ?: kotlin.run {
-                        _likeError.value = position
-                    }
-                }, {
-                    _likeError.value = position
-                })
+            if(isDeviceOnline()) {
+                ApiServiceGenerator.getApiService.dislike(id)
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe({
+
+                    }, {
+                        likeQuote(quote)
+                    })
+            }
+            else
+            {
+                addDislikeAction(id)
+            }
+        }
+    }
+
+    private fun addLikeAction(quoteId: Long) {
+        viewModelScope.launch {
+            AppDatabase.getAppDataBase()?.likeActionDao()?.insert(
+                LikeAction(
+                    quoteId = quoteId,
+                    isLiked = LikeAction.ACTION_LIKE
+                )
+            )
+        }
+    }
+
+    private fun addDislikeAction(quoteId: Long) {
+        viewModelScope.launch {
+            AppDatabase.getAppDataBase()?.likeActionDao()?.insert(
+                LikeAction(
+                    quoteId = quoteId,
+                    isLiked = LikeAction.ACTION_DISLIKE
+                )
+            )
+        }
+    }
+
+    private fun likeQuote(quote: Quote) {
+        quote.id?.let {
+            viewModelScope.launch {
+                AppDatabase.getAppDataBase()?.quoteDao()?.updateQuoteIsfavorite(it,1)
+            }
+        }
+    }
+
+    private fun dislikeQuote(quote: Quote) {
+        quote.id?.let {
+            viewModelScope.launch {
+                AppDatabase.getAppDataBase()?.quoteDao()?.updateQuoteIsfavorite(it,0)
+            }
+        }
+    }
+
+    inner class LikedQuotesBoundaryCallback : PagedList.BoundaryCallback<Quote?>() {
+        override fun onItemAtEndLoaded(itemAtEnd: Quote) {
+            super.onItemAtEndLoaded(itemAtEnd)
+            fetchLikedQuotes()
         }
     }
 

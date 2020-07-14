@@ -102,14 +102,15 @@ class SettingFragment : BaseFragment(), SettingTimeAdapter.OnItemClickListener {
         val pendingIntent = PendingIntent.getBroadcast(activity,
             NotificationPublisher.INTENT_REQUEST_CODE,intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
-        val futureInMillis = SystemClock.elapsedRealtime() + profileSetting.interval.times(3600000)
+        val internalInMillis = profileSetting.interval.times(60).times(60).times(1000)
+        val futureInMillis = System.currentTimeMillis() + internalInMillis
 
         val alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         if(Hawk.contains(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY) && Hawk.get<Boolean>(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY) == true)
         {
             alarmManager?.cancel(pendingIntent)
         }
-        alarmManager?.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureInMillis,profileSetting.interval.times(3600000).toLong(),pendingIntent)
+        alarmManager?.setRepeating(AlarmManager.RTC_WAKEUP,futureInMillis,internalInMillis.toLong(),pendingIntent)
         Hawk.put(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY,true)
     }
 

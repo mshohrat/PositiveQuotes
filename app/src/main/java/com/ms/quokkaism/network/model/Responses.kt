@@ -2,6 +2,7 @@ package com.ms.quokkaism.network.model
 
 import com.ms.quokkaism.model.Profile
 import com.ms.quokkaism.model.ProfileSetting
+import com.ms.quokkaism.model.SyncLikeAction
 import com.google.gson.annotations.SerializedName as SN
 
 data class LoginResponse(
@@ -19,6 +20,15 @@ data class LoginResponse(
     val expiresIn: Long = 3000000,
     @SN("uuid")
     val uuid: String? = null
+)
+
+data class RefreshTokenResponse(
+    @SN("access_token")
+    val token: String? = null,
+    @SN("refresh_token")
+    val refreshToken: String? = null,
+    @SN("expires_in")
+    val expiresIn: Long = 3000000
 )
 
 data class ProfileResponse(
@@ -71,4 +81,23 @@ data class ConfigResponse(
     val requiresFbToken : Boolean,
     @SN("setting")
     val setting: SettingResponse?
+)
+
+data class SyncLikeActionsResponse(
+    @SN("actions_synced")
+    val actions: List<SyncLikeAction>
+)
+
+data class ReceivedNotificationData(
+    @SN("quotes")
+    val quotes: List<ReceivedQuote?>?
+)
+
+data class ReceivedQuote(
+    @SN("id")
+    val id: Long? = null,
+    @SN("text")
+    val text: String? = null,
+    @SN("author")
+    val author: String? = null
 )

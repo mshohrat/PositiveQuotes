@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.ms.quokkaism.extension.isDeviceOnline
 import com.ms.quokkaism.network.base.ApiServiceGenerator
 import com.ms.quokkaism.network.model.ConfigResponse
 import com.ms.quokkaism.network.model.GeneralResponse
@@ -22,14 +23,20 @@ class SplashViewModel : ViewModel() {
 
     @SuppressLint("CheckResult")
     fun refreshConfig() {
-        ApiServiceGenerator.getApiService.getConfig()
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({
-                _config.value = it
-            },{
-                _config_error.value = GeneralResponse(it.message)
-            })
+        if(isDeviceOnline()) {
+            ApiServiceGenerator.getApiService.getConfig()
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe({
+                    _config.value = it
+                }, {
+                    _config_error.value = GeneralResponse(it.message)
+                })
+        }
+        else
+        {
+            _config.value = null
+        }
     }
 
     private val _login_as_guest = MutableLiveData<LoginResponse?>()

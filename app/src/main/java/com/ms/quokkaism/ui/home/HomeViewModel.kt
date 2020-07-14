@@ -1,33 +1,90 @@
 package com.ms.quokkaism.ui.home
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.ms.quokkaism.db.AppDatabase
-import com.ms.quokkaism.db.Quote
+import com.ms.quokkaism.db.model.LikeAction
+import com.ms.quokkaism.db.model.Quote
+import com.ms.quokkaism.extension.isDeviceOnline
+import com.ms.quokkaism.model.SyncLikeAction
 import com.ms.quokkaism.network.base.ApiServiceGenerator
+import com.ms.quokkaism.network.model.SyncLikeActionsRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel : ViewModel() {
 
-    private val _quotes = MutableLiveData<MutableList<Quote?>>()
-    val quotes : LiveData<MutableList<Quote?>> = _quotes
+    val syncIsRunning = MutableLiveData<Boolean>()
 
-    private val _like = MutableLiveData<Pair<Int,Boolean>>()
-    val like : LiveData<Pair<Int,Boolean>> = _like
+    var lastReadQuotes: LiveData<List<Quote?>?>? = AppDatabase.getAppDataBase()?.quoteDao()?.getLastReadQuotes()
 
-    private val _likeError = MutableLiveData<Int>()
-    val likeError : LiveData<Int> = _likeError
+    init {
+        handleFirstUnreadQuotesCount()
+        handleSyncActionsWithServer()
+    }
+
+    private fun handleFirstUnreadQuotesCount() {
+        if(isDeviceOnline()) {
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    val firstUnreadQuotes =
+                        AppDatabase.getAppDataBase()?.quoteDao()?.getFirstUnreadQuotes()
+                    if (firstUnreadQuotes == null || firstUnreadQuotes.size < 10) {
+                        fetchUnreadQuotesFromServer()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleSyncActionsWithServer() {
+        if(isDeviceOnline()) {
+            viewModelScope.launch {
+                withContext(Dispatchers.Main) {
+                    val likeActions = AppDatabase.getAppDataBase()?.likeActionDao()?.getAll()
+                    likeActions?.takeIf { it.isNotEmpty() }?.let {
+                        syncActionsWithServer(it)
+                    }
+                }
+            }
+        }
+    }
 
     @SuppressLint("CheckResult")
-    fun getQuotes() {
-        val lastReadQuotes = AppDatabase.getAppDataBase()?.quoteDao()?.getLastReadQuotes()
-        lastReadQuotes?.value?.takeIf { it.isNotEmpty() }?.let {
-            _quotes.value = it.toMutableList()
-        } ?: kotlin.run {
-            _quotes.value = mutableListOf()
+    private fun syncActionsWithServer(likeActions: List<LikeAction>) {
+        if(isDeviceOnline()) {
+            syncIsRunning.value = true
+            val syncLikeActions = mutableListOf<SyncLikeAction>()
+            likeActions.forEach {
+                syncLikeActions.add(
+                    SyncLikeAction(
+                        it.quoteId,
+                        it.isLiked == LikeAction.ACTION_LIKE
+                    )
+                )
+            }
+            ApiServiceGenerator.getApiService.syncLikeActions(SyncLikeActionsRequest(syncLikeActions))
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe({
+                    it?.let {
+                        viewModelScope.launch {
+                            AppDatabase.getAppDataBase()?.likeActionDao()?.deleteAll()
+                        }
+                    }
+                    syncIsRunning.value = false
+                }, {
+                    syncIsRunning.value = false
+                })
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun fetchUnreadQuotesFromServer() {
+        if(isDeviceOnline()) {
             ApiServiceGenerator.getApiService.getQuotes()
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
@@ -36,55 +93,112 @@ class HomeViewModel : ViewModel() {
                         val list = mutableListOf<Quote>()
                         it.forEach {
                             it.text?.let { text ->
-                                AppDatabase.getAppDataBase()?.quoteDao()?.insertQuote(
-                                    Quote(it.id,text,it.author)
+                                list.add(
+                                    Quote(
+                                        it.id,
+                                        text,
+                                        it.author
+                                    )
                                 )
-
+                            }
+                        }
+                        list.takeIf { it.isNotEmpty() }.let {
+                            viewModelScope.launch {
+                                AppDatabase.getAppDataBase()?.quoteDao()?.insertQuotes(list)
                             }
                         }
                     }
-                },{
+                }, {
 
                 })
         }
-
     }
 
     @SuppressLint("CheckResult")
     fun like(position:Int, quote: Quote) {
+        likeQuote(quote)
         quote.id?.let { id ->
-            ApiServiceGenerator.getApiService.like(id)
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe({
-                    it?.let {
-                        AppDatabase.getAppDataBase()?.quoteDao()?.updateQuote(quote.apply { isFavorite = 1 })
-                        _like.value = position to true
-                    } ?: kotlin.run {
-                        _likeError.value = position
-                    }
-                }, {
-                    _likeError.value = position
-                })
+            if(isDeviceOnline()) {
+                ApiServiceGenerator.getApiService.like(id)
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe({
+                        if (it == null) {
+                            dislikeQuote(quote)
+                        }
+                    }, {
+                        dislikeQuote(quote)
+                    })
+            }
+            else
+            {
+                addLikeAction(id)
+            }
         }
     }
 
     @SuppressLint("CheckResult")
     fun dislike(position:Int, quote: Quote) {
+        dislikeQuote(quote)
         quote.id?.let { id ->
-            ApiServiceGenerator.getApiService.dislike(id)
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe({
-                    it?.let {
-                        AppDatabase.getAppDataBase()?.quoteDao()?.updateQuote(quote.apply { isFavorite = 0 })
-                        _like.value = position to false
-                    } ?: kotlin.run {
-                        _likeError.value = position
-                    }
-                }, {
-                    _likeError.value = position
-                })
+            if(isDeviceOnline()) {
+                ApiServiceGenerator.getApiService.dislike(id)
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe({
+                        if (it == null) {
+                            likeQuote(quote)
+                        }
+                    }, {
+                        likeQuote(quote)
+                    })
+            }
+            else
+            {
+                addDislikeAction(id)
+            }
         }
+    }
+
+    private fun addLikeAction(quoteId: Long) {
+        viewModelScope.launch {
+            AppDatabase.getAppDataBase()?.likeActionDao()?.insert(
+                LikeAction(
+                    quoteId = quoteId,
+                    isLiked = LikeAction.ACTION_LIKE
+                )
+            )
+        }
+    }
+
+    private fun addDislikeAction(quoteId: Long) {
+        viewModelScope.launch {
+            AppDatabase.getAppDataBase()?.likeActionDao()?.insert(
+                LikeAction(
+                    quoteId = quoteId,
+                    isLiked = LikeAction.ACTION_DISLIKE
+                )
+            )
+        }
+    }
+
+    private fun likeQuote(quote: Quote) {
+        quote.id?.let {
+            viewModelScope.launch {
+                AppDatabase.getAppDataBase()?.quoteDao()?.updateQuoteIsfavorite(it,1)
+            }
+        }
+    }
+
+    private fun dislikeQuote(quote: Quote) {
+        quote.id?.let {
+            viewModelScope.launch {
+                AppDatabase.getAppDataBase()?.quoteDao()?.updateQuoteIsfavorite(it,0)
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
     }
 }

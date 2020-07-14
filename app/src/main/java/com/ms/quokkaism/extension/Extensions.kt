@@ -6,13 +6,19 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Patterns
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.ms.quokkaism.App
 import com.ms.quokkaism.MainActivity
 import com.ms.quokkaism.model.Profile
 import com.ms.quokkaism.util.LoadingDialog
@@ -58,9 +64,15 @@ fun Fragment.navigate(destinationId: Int,arguments : Bundle?){
     }
 }
 
-fun Fragment.showLoadingDialog() : LoadingDialog? {
+fun Fragment.reloadSideMenu() {
+    activity?.takeIf { it.isFinishing.not() && it is MainActivity }?.let {
+        (it as MainActivity).reloadSideMenu()
+    }
+}
+
+fun Fragment.showLoadingDialog(@StringRes messageResId : Int? = null) : LoadingDialog? {
     activity?.takeIf { it.isFinishing.not() }?.let {
-        val dialog = LoadingDialog(it)
+        val dialog = LoadingDialog(it,messageResId)
         dialog.show()
         return dialog
     } ?: kotlin.run {
@@ -117,4 +129,37 @@ fun View.hide() {
 
 fun CharSequence.isValidEmail() : Boolean {
     return !isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
+}
+
+fun isDeviceOnline(): Boolean {
+    val cm = App.appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+    if (Build.VERSION.SDK_INT < 23) {
+        cm?.activeNetworkInfo?.let {
+            return it.isConnected
+        }
+        return false
+
+    } else {
+        cm?.activeNetwork?.let {
+            cm.getNetworkCapabilities(it)?.let { networkCapabilities ->
+                return if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                    true
+            //                    } else if (
+            //                    //Just for FortiClient VPN
+            //                        networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED) &&
+            //                        networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_TRUSTED) &&
+            //                        networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+            //                    ) {
+            //
+            //                        return true
+            //
+            //                    }
+                } else {
+                    networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                }
+
+            }
+        }
+        return false
+    }
 }

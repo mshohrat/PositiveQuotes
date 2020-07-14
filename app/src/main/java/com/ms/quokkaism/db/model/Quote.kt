@@ -1,4 +1,4 @@
-package com.ms.quokkaism.db
+package com.ms.quokkaism.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -10,6 +10,7 @@ data class Quote(
     val id : Long? = null,
     val text : String,
     val author : String?,
+    val categoryId : Long? = null,
     @ColumnInfo(name = "is_read")
     val isRead : Int = 0,
     @ColumnInfo(name = "is_favorite")

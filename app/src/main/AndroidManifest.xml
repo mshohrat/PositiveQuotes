@@ -15,9 +15,7 @@
         android:usesCleartextTraffic="true">
 
         <receiver
-            android:name="com.ms.quokkaism.NotificationPublisher"
-            android:enabled="true"
-            android:exported="true"/>
+            android:name="com.ms.quokkaism.NotificationPublisher"/>
 
         <activity
             android:name="com.ms.quokkaism.MainActivity"

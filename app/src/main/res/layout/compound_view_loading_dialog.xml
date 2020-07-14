@@ -15,6 +15,7 @@
         android:layout_height="42dp"/>
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/compound_view_loading_dialog_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="?attr/textAppearanceHeadline3"

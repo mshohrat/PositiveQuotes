@@ -146,6 +146,25 @@ class SideMenuFragment : Fragment(), SideMenuAdapter.OnItemClickListener, NavCon
                         else -> {}
                     }
                 }
+                R.id.nav_about-> {
+                    when(item){
+                        R.string.home -> {navigateUp(); closeSideMenu();}
+                        R.string.setting -> {navigate(R.id.about_to_setting); closeSideMenu();}
+                        R.string.likes -> {navigate(R.id.about_to_likes); closeSideMenu();}
+                        R.string.profile -> {
+                            if(Profile.isUserGuest())
+                            {
+                                navigate(R.id.about_to_login)
+                                closeSideMenu()
+                            }
+                            else {
+                                navigate(R.id.about_to_profile)
+                                closeSideMenu()
+                            }
+                        }
+                        else -> {}
+                    }
+                }
                 else -> {}
             }
         }
@@ -159,11 +178,8 @@ class SideMenuFragment : Fragment(), SideMenuAdapter.OnItemClickListener, NavCon
     ) {
         when(destination.id) {
             R.id.nav_home -> sideMenuAdapter.selectItem(R.string.home)
-//            R.id.nav_setting -> sideMenuAdapter.selectItem(R.string.setting)
-//            R.id.nav_likes -> sideMenuAdapter.selectItem(R.string.likes)
-//            R.id.nav_about -> sideMenuAdapter.selectItem(R.string.about_us)
             R.id.nav_profile -> sideMenuAdapter.selectItem(-1)
-            else -> {/* sideMenuAdapter.selectItem(-1)*/ }
+            else -> {}
         }
     }
 

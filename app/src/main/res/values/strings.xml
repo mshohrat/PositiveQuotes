@@ -27,7 +27,7 @@
     <string name="welcome">خوش آمدید</string>
     <string name="default_notification_channel_id">quokkaism_notification_channel_id</string>
     <string name="login">ورود</string>
-    <string name="enjoy_your_life_with_quokka">با کویوکا از زندگی لذت ببرید</string>
+    <string name="enjoy_your_life_with_quokka">با کوئوکا از زندگی لذت ببرید</string>
     <string name="enter_your_email">ایمیل خود را وارد کنید</string>
     <string name="enter_your_password">رمز عبور خود را وارد کنید</string>
     <string name="entered_email_is_invalid">آدرس ایمیل وارد شده اشتباه است</string>
@@ -56,4 +56,7 @@
     <string name="the_text_copied_successfully">متن مورد نظر با موفقیت کپی شد</string>
     <string name="sharing">اشتراک گذاری</string>
     <string name="share_using">اشتراک گذاری با…</string>
+    <string name="syncing_with_server">در حال همگام‌سازی با سرور…</string>
+    <string name="about_us_desc">با کمتر از یک دقیقه در روز، به یک انسان آرام و با انرژی مثبت تبدیل شوید. با استفاده از برنامه کوئوکا در طول روز انرژی مثبت داشته باشید و قدم به قدم به آرامش ببشتر، نزدیک شوید.
+کوئوکا به شما یادآوری می‌کند لحظه‌ای نفس بکشید، لبخند بزنید و لذت ببرید تا روز خوبی را داشته باشید.</string>
 </resources>

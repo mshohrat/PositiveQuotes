@@ -8,7 +8,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/item_quote_fullscreen_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceHeadline1"
         tools:text="این متن برای تست است. تا وقتی که میتوانید بروید"
@@ -16,17 +16,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
         app:layout_constraintBottom_toTopOf="@id/item_quote_fullscreen_author"
         app:layout_constraintVertical_chainStyle="packed"
         android:layout_margin="24dp"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/item_quote_fullscreen_author"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceBody1"
         android:textColor="@color/gray"
         tools:text="میثم شهرت"
+        android:gravity="center"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

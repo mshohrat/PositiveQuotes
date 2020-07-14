@@ -8,11 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.ms.quokkaism.MainActivity
 import com.ms.quokkaism.R
-import com.ms.quokkaism.extension.dismissDialog
-import com.ms.quokkaism.extension.navigate
-import com.ms.quokkaism.extension.navigateUp
-import com.ms.quokkaism.extension.showLoadingDialog
+import com.ms.quokkaism.extension.*
 import com.ms.quokkaism.util.LoadingDialog
 import kotlinx.android.synthetic.main.fragment_signup.*
 
@@ -39,6 +37,7 @@ class SignupFragment : Fragment() {
         viewModel.signup.observe(viewLifecycleOwner, Observer {
             dismissDialog(loadingDialog)
             Toast.makeText(activity,it?.messageResId ?: 0, Toast.LENGTH_LONG).show()
+            reloadSideMenu()
             navigate(R.id.signup_to_splash)
         })
         viewModel.signup_error.observe(viewLifecycleOwner, Observer {

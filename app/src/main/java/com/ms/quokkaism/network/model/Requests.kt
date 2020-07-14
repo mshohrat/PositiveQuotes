@@ -1,6 +1,7 @@
 package com.ms.quokkaism.network.model
 
 import com.ms.quokkaism.BuildConfig
+import com.ms.quokkaism.model.SyncLikeAction
 import com.google.gson.annotations.SerializedName as SN
 
 data class SignupRequest(
@@ -9,9 +10,9 @@ data class SignupRequest(
     @SN("email")
     val email: String? = null,
     @SN("password")
-    val password: String? = null,
-    @SN("uuid")
-    val uuid: String? = null
+    val password: String? = null
+//    @SN("uuid")
+//    val uuid: String? = null
 )
 
 data class LoginRequest(
@@ -25,6 +26,17 @@ data class LoginRequest(
     val clientId: String = BuildConfig.CLIENT_ID,
     @SN("client_secret")
     val clientSecret: String = BuildConfig.CLIENT_SECRET
+)
+
+data class RefreshTokenRequest(
+    @SN("refresh_token")
+    val refreshToken: String? = null,
+    @SN("grant_type")
+    val grantType: String = "refresh_token",
+    @SN("client_id")
+    val clientId: String = BuildConfig.CLIENT_ID,
+    @SN("client_secret")
+    val clientSecret: String = BuildConfig.CLIENT_ID
 )
 
 data class LoginAsGuestRequest(
@@ -51,4 +63,9 @@ data class RegisterFbTokenRequest(
 data class ChangeSettingRequest(
     @SN("interval")
     val interval: Int
+)
+
+data class SyncLikeActionsRequest(
+    @SN("actions")
+    val actions: List<SyncLikeAction>
 )

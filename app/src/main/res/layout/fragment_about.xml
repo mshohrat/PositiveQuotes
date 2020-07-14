@@ -1,13 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/peach"
     tools:context="com.ms.quokkaism.ui.about.AboutFragment">
 
-    <TextView
+    <View
+        android:id="@+id/about_bg_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/about_title_tv"
+        android:layout_marginTop="42dp"
+        android:background="@drawable/shape_top_left_rounded_30dp_white"/>
 
-</FrameLayout>
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_about"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="24dp"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/about_menu_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/button_height_min"
+        android:minWidth="@dimen/button_height_min"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="?selectableItemBackground"
+        app:tint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_menu"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/about_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceHeadline2"
+        android:text="@string/about_us"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/about_menu_btn"
+        app:layout_constraintBottom_toBottomOf="@id/about_menu_btn"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/about_description_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceHeadline3"
+        android:text="@string/about_us_desc"
+        android:gravity="right"
+        app:lineHeight="36dp"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/about_bg_view"
+        android:layout_marginTop="42dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginStart="28dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

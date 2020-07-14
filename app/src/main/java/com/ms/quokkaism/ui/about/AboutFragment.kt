@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import com.ms.quokkaism.R
+import com.ms.quokkaism.extension.toggleSideMenu
 import com.ms.quokkaism.ui.base.BaseFragment
+import kotlinx.android.synthetic.main.fragment_about.*
 
 class AboutFragment : BaseFragment() {
 
@@ -22,5 +24,12 @@ class AboutFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(AboutViewModel::class.java)
+        subscribeToViewEvents()
+    }
+
+    private fun subscribeToViewEvents() {
+        about_menu_btn?.setOnClickListener {
+            toggleSideMenu()
+        }
     }
 }

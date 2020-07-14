@@ -19,11 +19,14 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.ms.quokkaism.NotificationPublisher
 import com.ms.quokkaism.R
-import com.ms.quokkaism.db.Quote
+import com.ms.quokkaism.db.model.Quote
+import com.ms.quokkaism.extension.dismissDialog
+import com.ms.quokkaism.extension.showLoadingDialog
 import com.ms.quokkaism.extension.toggleSideMenu
 import com.ms.quokkaism.model.ProfileSetting
 import com.ms.quokkaism.ui.base.BaseFragment
 import com.ms.quokkaism.ui.home.adapter.QuoteFullscreenAdapter
+import com.ms.quokkaism.util.LoadingDialog
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.fragment_home.*
 
@@ -31,6 +34,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener {
 
     private lateinit var homeViewModel: HomeViewModel
+    private var loadingDialog: LoadingDialog? = null
     private var quoteFullscreenAdapter: QuoteFullscreenAdapter? = null
 
     override fun onCreateView(
@@ -50,8 +54,9 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
     }
 
     private fun subscribeToViewModel() {
-        homeViewModel.quotes.observe(viewLifecycleOwner, Observer {
+        homeViewModel.lastReadQuotes?.observe(viewLifecycleOwner, Observer {
             it?.takeIf { it.isNotEmpty() } ?.let {
+                home_welcome_tv?.visibility = View.GONE
                 home_quote_rv?.visibility = View.VISIBLE
                 initRecycler(it)
             } ?: kotlin.run {
@@ -59,25 +64,23 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
                 home_welcome_tv?.visibility = View.VISIBLE
             }
         })
-
-        homeViewModel.like.observe(viewLifecycleOwner, Observer {
-            if(it.second) {
-                quoteFullscreenAdapter?.likeItemAt(it.first)
+        homeViewModel.syncIsRunning.observe(viewLifecycleOwner, Observer {
+            if(it) {
+                loadingDialog = showLoadingDialog(R.string.syncing_with_server)
             } else {
-                quoteFullscreenAdapter?.dislikeItemAt(it.first)
+                dismissDialog(loadingDialog)
             }
-        })
-
-        homeViewModel.likeError.observe(viewLifecycleOwner, Observer {
-            quoteFullscreenAdapter?.revertLikeItem(it)
         })
     }
 
-    private fun initRecycler(quotesList: MutableList<Quote?>) {
-        quoteFullscreenAdapter = QuoteFullscreenAdapter(quotesList,this)
-        home_quote_rv?.layoutManager = LinearLayoutManager(activity,RecyclerView.HORIZONTAL,false)
-        home_quote_rv?.adapter = quoteFullscreenAdapter
-        PagerSnapHelper().attachToRecyclerView(home_quote_rv)
+    private fun initRecycler(quotesList: List<Quote?>) {
+        quoteFullscreenAdapter?.submitItemList(quotesList) ?: kotlin.run {
+            quoteFullscreenAdapter = QuoteFullscreenAdapter(quotesList, this)
+            home_quote_rv?.layoutManager =
+                LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+            home_quote_rv?.adapter = quoteFullscreenAdapter
+            PagerSnapHelper().attachToRecyclerView(home_quote_rv)
+        }
     }
 
     private fun subscribeToViewEvents() {
@@ -97,10 +100,10 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
             setting?.let {
                 val intent = Intent(activity,NotificationPublisher::class.java)
                 val pendingIntent = PendingIntent.getBroadcast(activity,NotificationPublisher.INTENT_REQUEST_CODE,intent,PendingIntent.FLAG_UPDATE_CURRENT)
-
-                val futureInMillis = SystemClock.elapsedRealtime() + it.interval.times(3600000)
+                val internalInMillis = it.interval.times(60).times(60).times(1000)
+                val futureInMillis = SystemClock.elapsedRealtime() + internalInMillis
                 val alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-                alarmManager?.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureInMillis,it.interval.times(3600000).toLong(),pendingIntent)
+                alarmManager?.setRepeating(AlarmManager.RTC_WAKEUP,futureInMillis,internalInMillis.toLong(),pendingIntent)
                 Hawk.put(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY,true)
             }
         }
@@ -129,6 +132,12 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
                 homeViewModel.like(position,quote)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        dismissDialog(loadingDialog)
+        quoteFullscreenAdapter = null
+        super.onDestroyView()
     }
 
 }

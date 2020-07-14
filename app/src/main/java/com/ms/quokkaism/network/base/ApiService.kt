@@ -1,5 +1,6 @@
 package com.ms.quokkaism.network.base
 
+import com.ms.quokkaism.BuildConfig
 import com.ms.quokkaism.network.model.*
 import io.reactivex.Single
 import retrofit2.http.*
@@ -12,7 +13,11 @@ interface ApiService {
     @POST("auth/login")
     fun login(@Body request: LoginRequest): Single<LoginResponse?>?
 
-    @POST("auth/signup")
+    @POST("oauth/token")
+
+    fun refreshToken(@Body request: RefreshTokenRequest,@Url url: String = BuildConfig.SERVER_ADDRESS): Single<RefreshTokenResponse?>?
+
+    @POST("signup-from-guest")
     fun signup(@Body request: SignupRequest): Single<GeneralResponse?>?
 
     @GET("profile")
@@ -41,4 +46,7 @@ interface ApiService {
 
     @PATCH("dislike/{id}")
     fun dislike(@Path("id") quoteId: Long) : Single<GeneralResponse?>?
+
+    @POST("likes/sync")
+    fun syncLikeActions(@Body request: SyncLikeActionsRequest) : Single<SyncLikeActionsResponse?>?
 }

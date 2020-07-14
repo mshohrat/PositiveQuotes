@@ -1,5 +1,7 @@
 package com.ms.quokkaism.network.base
 
+import android.annotation.SuppressLint
+import com.ms.quokkaism.App
 import com.ms.quokkaism.model.Profile
 import com.orhanobut.hawk.Hawk
 import retrofit2.Retrofit
@@ -7,6 +9,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import com.ms.quokkaism.BuildConfig
+import com.ms.quokkaism.MainActivity
+import com.ms.quokkaism.network.model.RefreshTokenRequest
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -36,6 +42,7 @@ class ApiServiceGenerator {
             logging.level = HttpLoggingInterceptor.Level.BODY
 
             okHttpClient.addInterceptor(object : Interceptor {
+                @SuppressLint("CheckResult")
                 @Throws(IOException::class)
                 override fun intercept(chain: Interceptor.Chain): Response {
                     val original = chain.request()
@@ -57,8 +64,34 @@ class ApiServiceGenerator {
                     }
                     val response = chain.proceed(request)
                     if (response.code() == 401) {
-                        //todo remove account and restart app
-                        return response
+                        if(request?.url()?.pathSegments()?.contains("oauth") == true && request?.url()?.pathSegments()?.contains("token") == true
+                            || refreshToken.isEmpty())
+                        {
+                            //this is refresh token request. so, we should remove user and restart app
+                            Hawk.delete(Profile.PROFILE_KEY)
+                            App.doRestart()
+                        }
+                        else
+                        {
+                            getApiService.refreshToken(RefreshTokenRequest(refreshToken))
+                                ?.subscribeOn(Schedulers.io())
+                                ?.observeOn(AndroidSchedulers.mainThread())
+                                ?.subscribe({
+                                    it?.let {
+                                        val profile = Hawk.get(Profile.PROFILE_KEY) as? Profile
+                                        profile?.token = it.token
+                                        profile?.refreshToken = it.refreshToken
+                                        profile?.expiresIn = it.expiresIn
+                                        Hawk.put(Profile.PROFILE_KEY,profile)
+                                    } ?: kotlin.run {
+                                        Hawk.delete(Profile.PROFILE_KEY)
+                                        App.doRestart()
+                                    }
+                                },{
+                                    Hawk.delete(Profile.PROFILE_KEY)
+                                    App.doRestart()
+                                })
+                        }
                     }
                     return response
                 }
@@ -68,6 +101,15 @@ class ApiServiceGenerator {
                         if (Hawk.contains(Profile.PROFILE_KEY) && Hawk.get<Profile?>(Profile.PROFILE_KEY) is Profile) {
                             val profile = Hawk.get<Profile?>(Profile.PROFILE_KEY)
                             return profile?.token?.let { it } ?: ""
+                        }
+                        return ""
+                    }
+
+                private val refreshToken: String
+                    private get() {
+                        if (Hawk.contains(Profile.PROFILE_KEY) && Hawk.get<Profile?>(Profile.PROFILE_KEY) is Profile) {
+                            val profile = Hawk.get<Profile?>(Profile.PROFILE_KEY)
+                            return profile?.refreshToken?.let { it } ?: ""
                         }
                         return ""
                     }

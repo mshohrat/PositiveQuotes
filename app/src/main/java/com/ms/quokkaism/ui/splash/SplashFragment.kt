@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.iid.FirebaseInstanceId
 
 import com.ms.quokkaism.R
+import com.ms.quokkaism.extension.isDeviceOnline
 import com.ms.quokkaism.extension.isUserLoggedIn
 import com.ms.quokkaism.extension.navigate
 import com.ms.quokkaism.model.Profile
@@ -53,21 +54,28 @@ class SplashFragment : BaseFragment() {
 
     private fun subscribeToViewModel() {
         viewModel.config.observe(viewLifecycleOwner, Observer {
-            it?.takeIf { it.isUserActive }?.let {
-                it.setting?.interval?.let { interval ->
-                    Hawk.put(ProfileSetting.PROFILE_SETTING_KEY,ProfileSetting(interval))
-                }
-                if(it.requiresFbToken)
-                {
-                    sendFbTokenToServerAndNavigateToMain();
-                }
-                else {
-                    navigateToHome()
+            it?.let {
+                when {
+                    it.isUserActive -> {
+                        it.setting?.interval?.let { interval ->
+                            Hawk.put(ProfileSetting.PROFILE_SETTING_KEY,ProfileSetting(interval))
+                        }
+                        if(it.requiresFbToken)
+                        {
+                            sendFbTokenToServerAndNavigateToMain();
+                        }
+                        else {
+                            navigateToHome()
+                        }
+                    }
+                    else -> {
+                        showErrorToUser()
+                        hideLoading()
+                        showRetry()
+                    }
                 }
             } ?: kotlin.run {
-                showErrorToUser()
-                hideLoading()
-                showRetry()
+                navigateToHome()
             }
         })
         viewModel.config_error.observe(viewLifecycleOwner, Observer {

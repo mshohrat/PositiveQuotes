@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ms.quokkaism.R
-import com.ms.quokkaism.db.Quote
+import com.ms.quokkaism.db.model.Quote
 import kotlinx.android.synthetic.main.item_quote_fullscreen.view.*
 
 class QuoteFullscreenAdapter(
-    private val itemList: MutableList<Quote?> = mutableListOf(),
+    private var itemList: List<Quote?> = listOf(),
     private val onItemClickListener: OnItemClickListener? = null
 ): RecyclerView.Adapter<QuoteFullscreenAdapter.ViewHolder>() {
 
@@ -56,38 +56,9 @@ class QuoteFullscreenAdapter(
         }
     }
 
-    fun likeItemAt(position: Int) {
-        if(itemList.size > position) {
-            val item = itemList[position]
-            item?.let {
-                it.isFavorite = 1
-                notifyDataSetChanged()
-            }
-        }
-    }
-
-    fun dislikeItemAt(position: Int) {
-        if(itemList.size > position) {
-            val item = itemList[position]
-            item?.let {
-                it.isFavorite = 0
-                notifyDataSetChanged()
-            }
-        }
-    }
-
-    fun revertLikeItem(position: Int) {
-        if(itemList.size > position) {
-            val item = itemList[position]
-            item?.let {
-                if(it.isLiked()) {
-                    it.isFavorite = 0
-                } else {
-                    it.isFavorite = 1
-                }
-                notifyDataSetChanged()
-            }
-        }
+    fun submitItemList(itemList: List<Quote?>) {
+        this.itemList = itemList
+        notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
