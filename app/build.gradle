@@ -56,14 +56,14 @@ android {
             buildConfigField 'String', 'STORE_NAME', '"cafebazaar"'
             buildConfigField 'String', 'SERVER_ADDRESS', '"http://quokka-app.ir/"'
             buildConfigField 'String', 'CLIENT_ID', '"2"'
-            buildConfigField 'String', 'CLIENT_SECRET', '"DgmiXBquO9YJCYFWx0TZV49lF6fUxqK5evb6D83M"'
+            buildConfigField 'String', 'CLIENT_SECRET', '"t2WkXNasViZbFPNJJHwHBEpbj30pkT3Jer36UU2i"'
         }
         googlePlay {
             dimension "main"
             buildConfigField 'String', 'STORE_NAME', '"playstore"'
             buildConfigField 'String', 'SERVER_ADDRESS', '"http://quokka-app.ir/"'
             buildConfigField 'String', 'CLIENT_ID', '"2"'
-            buildConfigField 'String', 'CLIENT_SECRET', '"DgmiXBquO9YJCYFWx0TZV49lF6fUxqK5evb6D83M"'
+            buildConfigField 'String', 'CLIENT_SECRET', '"t2WkXNasViZbFPNJJHwHBEpbj30pkT3Jer36UU2i"'
         }
     }
 
