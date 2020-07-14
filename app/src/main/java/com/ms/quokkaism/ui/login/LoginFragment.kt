@@ -9,10 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.ms.quokkaism.App
 import com.ms.quokkaism.R
-import com.ms.quokkaism.extension.dismissDialog
-import com.ms.quokkaism.extension.isValidEmail
-import com.ms.quokkaism.extension.navigate
-import com.ms.quokkaism.extension.showLoadingDialog
+import com.ms.quokkaism.extension.*
 import com.ms.quokkaism.model.Profile
 import com.ms.quokkaism.ui.base.BaseFragment
 import com.ms.quokkaism.util.LoadingDialog
@@ -90,6 +87,7 @@ class LoginFragment : BaseFragment() {
 
     override fun onDestroyView() {
         dismissDialog(loadingDialog)
+        login_email_et?.hideSoftKeyboard()
         super.onDestroyView()
     }
 

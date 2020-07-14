@@ -14,6 +14,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 
 import com.ms.quokkaism.R
 import com.ms.quokkaism.extension.isDeviceOnline
+import com.ms.quokkaism.extension.isGooglePlayServicesAvailable
 import com.ms.quokkaism.extension.isUserLoggedIn
 import com.ms.quokkaism.extension.navigate
 import com.ms.quokkaism.model.Profile
@@ -40,6 +41,9 @@ class SplashFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SplashViewModel::class.java)
+        if(!isGooglePlayServicesAvailable) {
+            //todo show google play services not available dialog
+        }
         subscribeToViewModel()
         subscribeToViewEvents()
         if(isUserLoggedIn())

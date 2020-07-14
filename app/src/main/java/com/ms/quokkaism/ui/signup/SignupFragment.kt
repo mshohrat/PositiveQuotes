@@ -66,6 +66,7 @@ class SignupFragment : Fragment() {
 
     override fun onDestroyView() {
         dismissDialog(loadingDialog)
+        signup_email_et?.hideSoftKeyboard()
         super.onDestroyView()
     }
 

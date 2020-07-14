@@ -36,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/login_back_btn"
-        app:layout_constraintBottom_toBottomOf="@id/login_back_btn" />
+        app:layout_constraintBottom_toBottomOf="@id/login_back_btn"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/login_bg_iv"
@@ -44,7 +44,8 @@
         android:layout_height="wrap_content"
         android:scaleY="0.9"
         android:scaleX="0.9"
-        app:layout_constraintTop_toBottomOf="@id/login_back_btn"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/login_desc_tv"
         app:srcCompat="@drawable/ic_bg_login"/>
 
     <com.google.android.material.textview.MaterialTextView
@@ -53,7 +54,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceHeadline1"
         android:text="@string/enjoy_your_life_with_quokka"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:gravity="end"
@@ -61,7 +62,7 @@
         android:maxLines="2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_bg_iv"/>
+        app:layout_constraintBottom_toTopOf="@id/login_email_et"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/login_email_et"
@@ -72,12 +73,12 @@
         android:minHeight="@dimen/edit_text_height"
         app:layout_constraintStart_toStartOf="@id/login_desc_tv"
         app:layout_constraintEnd_toEndOf="@id/login_desc_tv"
-        app:layout_constraintTop_toBottomOf="@id/login_desc_tv"
+        app:layout_constraintBottom_toTopOf="@id/login_password_et"
         android:gravity="end|center_vertical"
         android:textColorHint="@color/gray"
         android:hint="@string/enter_your_email"
         android:inputType="textEmailAddress"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
         android:background="@drawable/shape_rounded_25dp_white"/>
@@ -91,12 +92,13 @@
         android:minHeight="@dimen/edit_text_height"
         app:layout_constraintStart_toStartOf="@id/login_desc_tv"
         app:layout_constraintEnd_toEndOf="@id/login_desc_tv"
-        app:layout_constraintTop_toBottomOf="@id/login_email_et"
+        app:layout_constraintBottom_toTopOf="@id/login_not_registered_btn"
         android:gravity="end|center_vertical"
         android:hint="@string/enter_your_password"
         android:textColorHint="@color/gray"
         android:inputType="textPassword"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="32dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
         android:background="@drawable/shape_rounded_25dp_white"/>

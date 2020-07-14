@@ -1,5 +1,6 @@
 package com.ms.quokkaism.extension
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.res.Resources
@@ -13,11 +14,14 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Patterns
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.ms.quokkaism.App
 import com.ms.quokkaism.MainActivity
 import com.ms.quokkaism.model.Profile
@@ -161,5 +165,27 @@ fun isDeviceOnline(): Boolean {
             }
         }
         return false
+    }
+}
+
+val Fragment.isGooglePlayServicesAvailable: Boolean
+    get() {
+        try {
+            val status = GoogleApiAvailability.getInstance()
+                .isGooglePlayServicesAvailable(activity)
+            if (status == ConnectionResult.SUCCESS) {
+                return true
+            }
+        } catch (e: Exception) {
+        }
+        return false
+    }
+
+@SuppressLint("WrongConstant")
+fun View.hideSoftKeyboard() {
+    try {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    } catch (e: Exception) {
     }
 }
