@@ -32,7 +32,7 @@ class BootReceiver: BroadcastReceiver() {
             NotificationPublisher.INTENT_REQUEST_CODE,intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
         val internalInMillis = profileSetting.interval.times(60).times(60).times(1000)
-        val futureInMillis = System.currentTimeMillis() /*+ internalInMillis*/
+        val futureInMillis = System.currentTimeMillis() + internalInMillis
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         if(Hawk.contains(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY) && Hawk.get<Boolean>(
