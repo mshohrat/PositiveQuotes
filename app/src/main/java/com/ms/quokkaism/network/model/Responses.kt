@@ -78,9 +78,9 @@ data class ConfigResponse(
     @SN("is_user_active")
     val isUserActive : Boolean,
     @SN("requires_token")
-    val requiresFbToken : Boolean,
+    val requiresFbToken : Boolean = false,
     @SN("setting")
-    val setting: SettingResponse?
+    val setting: SettingResponse? = null
 )
 
 data class SyncLikeActionsResponse(

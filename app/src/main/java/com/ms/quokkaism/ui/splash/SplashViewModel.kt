@@ -5,11 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ms.quokkaism.extension.isDeviceOnline
+import com.ms.quokkaism.model.UserConfig
 import com.ms.quokkaism.network.base.ApiServiceGenerator
 import com.ms.quokkaism.network.model.ConfigResponse
 import com.ms.quokkaism.network.model.GeneralResponse
 import com.ms.quokkaism.network.model.LoginAsGuestRequest
 import com.ms.quokkaism.network.model.LoginResponse
+import com.orhanobut.hawk.Hawk
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -28,6 +30,7 @@ class SplashViewModel : ViewModel() {
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe({
+                    Hawk.put(UserConfig.USER_CONFIG_KEY, UserConfig(it?.isUserActive ?: false))
                     _config.value = it
                 }, {
                     _config_error.value = GeneralResponse(it.message)
@@ -35,7 +38,7 @@ class SplashViewModel : ViewModel() {
         }
         else
         {
-            _config.value = null
+            _config.value = ConfigResponse(Hawk.get<UserConfig>(UserConfig.USER_CONFIG_KEY)?.isUserActive ?: false)
         }
     }
 
