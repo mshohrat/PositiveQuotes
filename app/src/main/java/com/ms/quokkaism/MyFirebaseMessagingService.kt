@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        remoteMessage.data?.toString()?.let {
+        remoteMessage.data.toString().let {
             val data = Gson().fromJson<ReceivedNotificationData>(it, ReceivedNotificationData::class.java)
             data?.quotes?.takeIf { it.isNotEmpty() }?.let { quotes ->
                 val finalList = mutableListOf<Quote>()
@@ -41,8 +41,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    override fun onNewToken(token: String?) {
-        token?.let {
+    override fun onNewToken(token: String) {
+        token.let {
             ApiServiceGenerator.getApiService.registerFbToken(RegisterFbTokenRequest(it))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())

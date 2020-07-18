@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             }
         }
         subscribeToViewChanges()
+        INSTANCE = this
     }
 
     private fun subscribeToViewChanges() {
@@ -194,6 +195,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
     }
 
+    override fun onDestroy() {
+        INSTANCE = null
+        super.onDestroy()
+    }
+
     private fun navigateUpFragment()
     {
         val navController = findNavController(R.id.main_content_nav_host)
@@ -234,5 +240,13 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_side_menu_frame,SideMenuFragment())
             .commit()
+    }
+
+    companion object {
+        var INSTANCE : MainActivity? = null
+        fun doRestart() {
+            INSTANCE?.reloadSideMenu()
+            INSTANCE?.findNavController(R.id.main_content_nav_host)?.navigate(R.id.pop_to_splash)
+        }
     }
 }

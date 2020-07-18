@@ -50,7 +50,8 @@ class LoginFragment : BaseFragment() {
                     uuid = it.uuid
                 )
                 Hawk.put(Profile.PROFILE_KEY, profile)
-                App.doRestart()
+                reloadSideMenu()
+                navigate(R.id.login_to_splash)
             }
         })
         viewModel.login_error.observe(viewLifecycleOwner, Observer {

@@ -69,7 +69,7 @@ class ApiServiceGenerator {
                         {
                             //this is refresh token request. so, we should remove user and restart app
                             Hawk.delete(Profile.PROFILE_KEY)
-                            App.doRestart()
+                            MainActivity.doRestart()
                         }
                         else
                         {
@@ -85,11 +85,11 @@ class ApiServiceGenerator {
                                         Hawk.put(Profile.PROFILE_KEY,profile)
                                     } ?: kotlin.run {
                                         Hawk.delete(Profile.PROFILE_KEY)
-                                        App.doRestart()
+                                        MainActivity.doRestart()
                                     }
                                 },{
                                     Hawk.delete(Profile.PROFILE_KEY)
-                                    App.doRestart()
+                                    MainActivity.doRestart()
                                 })
                         }
                     }
