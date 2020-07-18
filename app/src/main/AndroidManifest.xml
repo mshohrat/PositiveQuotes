@@ -3,6 +3,7 @@
     package="com.ms.quokkaism">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name="com.ms.quokkaism.App"
@@ -15,7 +16,20 @@
         android:usesCleartextTraffic="true">
 
         <receiver
-            android:name="com.ms.quokkaism.NotificationPublisher"/>
+            android:name="com.ms.quokkaism.NotificationPublisher"
+            android:exported="true"
+            android:enabled="true"/>
+
+        <receiver android:name="com.ms.quokkaism.BootReceiver"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name="com.ms.quokkaism.MainActivity"

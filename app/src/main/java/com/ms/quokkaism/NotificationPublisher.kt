@@ -6,6 +6,9 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -46,6 +49,7 @@ class NotificationPublisher : BroadcastReceiver() {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setShowWhen(true)
                         .setAutoCancel(true)
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 
                     val resultIntent = Intent(context, MainActivity::class.java)
                     resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -80,6 +84,12 @@ class NotificationPublisher : BroadcastReceiver() {
             return
         } ?: kotlin.run {
             val notificationChannel = NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME,NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .build())
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }

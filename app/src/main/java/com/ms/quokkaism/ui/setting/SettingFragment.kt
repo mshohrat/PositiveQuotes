@@ -99,6 +99,7 @@ class SettingFragment : BaseFragment(), SettingTimeAdapter.OnItemClickListener {
     private fun reScheduleNotification(profileSetting: ProfileSetting) {
 
         val intent = Intent(activity, NotificationPublisher::class.java)
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
         val pendingIntent = PendingIntent.getBroadcast(activity,
             NotificationPublisher.INTENT_REQUEST_CODE,intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
