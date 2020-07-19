@@ -36,7 +36,7 @@ interface ApiService {
     fun registerFbToken(@Body request: RegisterFbTokenRequest) : Single<GeneralResponse?>?
 
     @PATCH("edit-setting")
-    fun changeSetting(@Body request: ChangeSettingRequest): Single<SettingResponse?>?
+    fun changeSetting(@Body request: ChangeSettingRequest): Single<EditSettingResponse?>?
 
     @GET("quotes")
     fun getQuotes() : Single<QuoteListResponse?>?

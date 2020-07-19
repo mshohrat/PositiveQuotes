@@ -6,8 +6,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.ms.quokkaism.App
 import com.ms.quokkaism.NotificationPublisher
 import com.ms.quokkaism.R
 import com.ms.quokkaism.db.model.Quote
@@ -71,6 +72,12 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
                 dismissDialog(loadingDialog)
             }
         })
+
+        homeViewModel.quotesFetched.observe(viewLifecycleOwner, Observer {
+            if(it) {
+                scheduleNotification()
+            }
+        })
     }
 
     private fun initRecycler(quotesList: List<Quote?>) {
@@ -98,13 +105,21 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
         {
             val setting = Hawk.get<ProfileSetting?>(ProfileSetting.PROFILE_SETTING_KEY)
             setting?.let {
-                val intent = Intent(activity,NotificationPublisher::class.java)
-                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                val intent = Intent(App.appContext,NotificationPublisher::class.java)
                 val pendingIntent = PendingIntent.getBroadcast(activity,NotificationPublisher.INTENT_REQUEST_CODE,intent,PendingIntent.FLAG_UPDATE_CURRENT)
-                val internalInMillis = it.interval.times(60).times(60).times(1000)
-                val futureInMillis = System.currentTimeMillis() + internalInMillis
+                val futureInMillis = System.currentTimeMillis() + (it.interval.toLong() * 3600000)
                 val alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-                alarmManager?.setRepeating(AlarmManager.RTC_WAKEUP,futureInMillis,internalInMillis.toLong(),pendingIntent)
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                        alarmManager?.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
+                    }
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
+                        alarmManager?.setExact(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
+                    }
+                    else -> {
+                        alarmManager?.set(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
+                    }
+                }
                 Hawk.put(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY,true)
             }
         }

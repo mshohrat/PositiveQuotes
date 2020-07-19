@@ -19,6 +19,8 @@ class HomeViewModel : ViewModel() {
 
     val syncIsRunning = MutableLiveData<Boolean>()
 
+    val quotesFetched = MutableLiveData<Boolean>(false)
+
     var lastReadQuotes: LiveData<List<Quote?>?>? = AppDatabase.getAppDataBase()?.quoteDao()?.getLastReadQuotes()
 
     init {
@@ -103,6 +105,7 @@ class HomeViewModel : ViewModel() {
                             }
                         }
                         list.takeIf { it.isNotEmpty() }.let {
+                            quotesFetched.value = true
                             viewModelScope.launch {
                                 AppDatabase.getAppDataBase()?.quoteDao()?.insertQuotes(list)
                             }

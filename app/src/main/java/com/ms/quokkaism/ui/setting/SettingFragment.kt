@@ -4,15 +4,16 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ms.quokkaism.App
 import com.ms.quokkaism.NotificationPublisher
 import com.ms.quokkaism.R
 import com.ms.quokkaism.extension.convertDpToPixel
@@ -98,20 +99,29 @@ class SettingFragment : BaseFragment(), SettingTimeAdapter.OnItemClickListener {
 
     private fun reScheduleNotification(profileSetting: ProfileSetting) {
 
-        val intent = Intent(activity, NotificationPublisher::class.java)
-        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+        val intent = Intent(App.appContext,NotificationPublisher::class.java)
         val pendingIntent = PendingIntent.getBroadcast(activity,
             NotificationPublisher.INTENT_REQUEST_CODE,intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
-        val internalInMillis = profileSetting.interval.times(60).times(60).times(1000)
-        val futureInMillis = System.currentTimeMillis() + internalInMillis
+        val futureInMillis = System.currentTimeMillis() + (profileSetting.interval.toLong() * 3600000)
 
         val alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        if(Hawk.contains(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY) && Hawk.get<Boolean>(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY) == true)
-        {
+        try {
             alarmManager?.cancel(pendingIntent)
+        } catch (e : Exception) {
+
         }
-        alarmManager?.setRepeating(AlarmManager.RTC_WAKEUP,futureInMillis,internalInMillis.toLong(),pendingIntent)
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                alarmManager?.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
+                alarmManager?.setExact(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
+            }
+            else -> {
+                alarmManager?.set(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
+            }
+        }
         Hawk.put(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY,true)
     }
 

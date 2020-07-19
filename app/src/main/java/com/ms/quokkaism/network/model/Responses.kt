@@ -63,6 +63,11 @@ data class LikedQuotesResponse(
     val likedQuotes: List<QuoteResponse?>?
 )
 
+data class EditSettingResponse(
+    @SN("setting")
+    val setting: SettingResponse
+)
+
 data class SettingResponse(
     @SN("interval")
     val interval: Int? = ProfileSetting.INTERVAL_12_HOURS

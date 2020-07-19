@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SETTING" />
 
     <application
         android:name="com.ms.quokkaism.App"
@@ -18,7 +21,8 @@
         <receiver
             android:name="com.ms.quokkaism.NotificationPublisher"
             android:exported="true"
-            android:enabled="true"/>
+            android:enabled="true">
+        </receiver>
 
         <receiver android:name="com.ms.quokkaism.BootReceiver"
             android:exported="true"
