@@ -12,7 +12,7 @@
         <item name="textAppearanceHeadline4">@style/Headline4.FixSize</item>
         <item name="textAppearanceBody1">@style/Body1.FixSize</item>
         <item name="textAppearanceCaption">@style/Caption.FixSize</item>
-        <item name="android:textDirection">locale</item>
+        <item name="android:textDirection">rtl</item>
         <item name="android:fontFamily">@font/iransans_family</item>
         <item name="fontFamily">@font/iransans_family</item>
     </style>

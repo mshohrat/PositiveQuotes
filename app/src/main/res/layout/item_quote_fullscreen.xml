@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceHeadline1"
-        tools:text="این متن برای تست است. تا وقتی که میتوانید بروید"
+        tools:text="این متن برای تست است. تا وقتی که میتوانید بروید."
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

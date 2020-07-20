@@ -43,6 +43,7 @@
     <string name="please_wait">لطفا صبر کنید</string>
     <string name="name_is_required">وارد کردن نام الزامیست</string>
     <string name="email_is_required">وارد کردن ایمیل الزامیست</string>
+    <string name="email_is_incorrect">ایمیل وارد شده اشتباه است</string>
     <string name="password_is_required">وارد کردن رمز عبور الزامیست</string>
     <string name="repeat_password_is_required">وارد کردن تکرار رمز عبور الزامیست</string>
     <string name="password_and_repeat_are_not_the_same">رمز عبور و تکرار آن یکسان نیست</string>
@@ -57,6 +58,6 @@
     <string name="sharing">اشتراک گذاری</string>
     <string name="share_using">اشتراک گذاری با…</string>
     <string name="syncing_with_server">در حال همگام‌سازی با سرور…</string>
-    <string name="about_us_desc">با کمتر از یک دقیقه در روز، به یک انسان آرام و با انرژی مثبت تبدیل شوید. با استفاده از برنامه کوئوکا در طول روز انرژی مثبت داشته باشید و قدم به قدم به آرامش ببشتر، نزدیک شوید.
+    <string name="about_us_desc">با کمتر از یک دقیقه در روز، به یک انسان آرام و با انرژی مثبت تبدیل شوید. با استفاده از برنامه کوئوکا در طول روز انرژی مثبت داشته باشید و قدم به قدم به آرامش بیشتر، نزدیک شوید.
 کوئوکا به شما یادآوری می‌کند لحظه‌ای نفس بکشید، لبخند بزنید و لذت ببرید تا روز خوبی را داشته باشید.</string>
 </resources>

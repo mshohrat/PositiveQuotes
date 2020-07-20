@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ms.quokkaism.R
+import com.ms.quokkaism.extension.isValidEmail
 import com.ms.quokkaism.model.Profile
 import com.ms.quokkaism.network.base.ApiServiceGenerator
 import com.ms.quokkaism.network.model.GeneralResponse
@@ -27,6 +28,7 @@ class SignupViewModel : ViewModel() {
         when {
             name.isNullOrEmpty() -> { _signup_error.value = GeneralResponse(messageResId = R.string.name_is_required) }
             email.isNullOrEmpty() -> { _signup_error.value = GeneralResponse(messageResId = R.string.email_is_required) }
+            email.isValidEmail().not() -> { _signup_error.value = GeneralResponse(messageResId = R.string.email_is_incorrect) }
             password.isNullOrEmpty() -> { _signup_error.value = GeneralResponse(messageResId = R.string.password_is_required) }
             repeatPassword.isNullOrEmpty() -> { _signup_error.value = GeneralResponse(messageResId = R.string.repeat_password_is_required) }
             (password == repeatPassword).not() -> { _signup_error.value = GeneralResponse(messageResId = R.string.password_and_repeat_are_not_the_same)}
