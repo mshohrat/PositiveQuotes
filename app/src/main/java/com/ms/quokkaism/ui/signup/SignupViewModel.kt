@@ -5,14 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ms.quokkaism.R
+import com.ms.quokkaism.extension.getErrorHttpModel
+import com.ms.quokkaism.extension.getFirstMessage
 import com.ms.quokkaism.extension.isValidEmail
 import com.ms.quokkaism.model.Profile
 import com.ms.quokkaism.network.base.ApiServiceGenerator
 import com.ms.quokkaism.network.model.GeneralResponse
+import com.ms.quokkaism.network.model.InvalidRequestData
+import com.ms.quokkaism.network.model.InvalidRequestResponse
 import com.ms.quokkaism.network.model.SignupRequest
 import com.orhanobut.hawk.Hawk
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
 
 class SignupViewModel : ViewModel() {
 
@@ -40,7 +45,13 @@ class SignupViewModel : ViewModel() {
                         updateProfile(name,email)
                         _signup.value = GeneralResponse(messageResId = R.string.registered_successfully)
                     },{
-                        _signup_error.value = GeneralResponse(it.message)
+                        it.getErrorHttpModel(InvalidRequestResponse::class.java)?.let {
+                            it.getFirstMessage()?.let { message ->
+                                _signup_error.value = GeneralResponse(message)
+                            }
+                        } ?: kotlin.run {
+                            _signup_error.value = GeneralResponse(messageResId = R.string.error_on_connecting_to_server)
+                        }
                     })
             }
         }

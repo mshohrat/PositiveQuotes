@@ -13,9 +13,8 @@ interface ApiService {
     @POST("auth/login")
     fun login(@Body request: LoginRequest): Single<LoginResponse?>?
 
-    @POST("oauth/token")
-
-    fun refreshToken(@Body request: RefreshTokenRequest,@Url url: String = BuildConfig.SERVER_ADDRESS): Single<RefreshTokenResponse?>?
+    @POST()
+    fun refreshToken(@Body request: RefreshTokenRequest,@Url url: String = BuildConfig.SERVER_ADDRESS + "oauth/token"): Single<RefreshTokenResponse?>?
 
     @POST("signup-from-guest")
     fun signup(@Body request: SignupRequest): Single<GeneralResponse?>?

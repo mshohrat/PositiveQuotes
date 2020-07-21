@@ -22,11 +22,16 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.gson.Gson
 import com.ms.quokkaism.App
 import com.ms.quokkaism.MainActivity
 import com.ms.quokkaism.model.Profile
+import com.ms.quokkaism.network.model.GeneralResponse
+import com.ms.quokkaism.network.model.InvalidRequestResponse
 import com.ms.quokkaism.util.LoadingDialog
 import com.orhanobut.hawk.Hawk
+import retrofit2.HttpException
+import retrofit2.Response
 
 
 fun convertPixelToDp(context: Context?, px: Float): Float {
@@ -187,5 +192,53 @@ fun View.hideSoftKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     } catch (e: Exception) {
+    }
+}
+
+fun <T> Throwable.getErrorHttpModel(type: Class<T>) : T? {
+    return if(this is HttpException){
+        val body = this.response()?.errorBody()
+        if(body != null ){
+            try {
+                Gson().fromJson(body.string(),type)
+            } catch (e: Exception) {
+                null
+            }
+        } else {
+            null
+        }
+    }
+    else {
+        null
+    }
+}
+
+fun Throwable.isUnauthorizedError() : Boolean {
+    return if(this is HttpException) {
+        this.code() == 401
+    }
+    else {
+        false
+    }
+}
+
+fun InvalidRequestResponse.getFirstMessage() : String? {
+    invalidRequestData?.let { errors ->
+        return when {
+            errors.nameErrors?.isNotEmpty() == true -> {
+                errors.nameErrors[0]
+            }
+            errors.emailErrors?.isNotEmpty() == true -> {
+                errors.emailErrors[0]
+            }
+            errors.passwordErrors?.isNotEmpty() == true -> {
+                errors.passwordErrors[0]
+            }
+            else -> {
+                null
+            }
+        }
+    } ?: kotlin.run {
+        return null
     }
 }

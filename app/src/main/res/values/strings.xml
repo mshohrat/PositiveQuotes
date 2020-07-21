@@ -23,6 +23,7 @@
     <string name="profile">حساب کاربری</string>
     <string name="likes">علاقه‌مندی‌ها</string>
     <string name="error_on_connecting_to_server">خطا در برقراری ارتباط با سرور</string>
+    <string name="username_or_password_is_incorrect">نام کاربری یا رمز عبور اشتباه است</string>
     <string name="retry">تلاش مجدد</string>
     <string name="welcome">خوش آمدید</string>
     <string name="default_notification_channel_id">quokkaism_notification_channel_id</string>

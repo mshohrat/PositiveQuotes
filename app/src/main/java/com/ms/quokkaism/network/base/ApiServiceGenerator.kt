@@ -64,7 +64,10 @@ class ApiServiceGenerator {
                     }
                     val response = chain.proceed(request)
                     if (response.code() == 401) {
-                        if(request?.url()?.pathSegments()?.contains("oauth") == true && request?.url()?.pathSegments()?.contains("token") == true
+                        if(request?.url()?.pathSegments()?.contains("auth") == true && request?.url()?.pathSegments()?.contains("login") == true) {
+                            return response
+                        }
+                        else if(request?.url()?.pathSegments()?.contains("oauth") == true && request?.url()?.pathSegments()?.contains("token") == true
                             || refreshToken.isEmpty())
                         {
                             //this is refresh token request. so, we should remove user and restart app

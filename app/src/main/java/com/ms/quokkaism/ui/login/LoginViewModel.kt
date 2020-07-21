@@ -4,8 +4,13 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.ms.quokkaism.R
+import com.ms.quokkaism.extension.getErrorHttpModel
+import com.ms.quokkaism.extension.getFirstMessage
+import com.ms.quokkaism.extension.isUnauthorizedError
 import com.ms.quokkaism.network.base.ApiServiceGenerator
 import com.ms.quokkaism.network.model.GeneralResponse
+import com.ms.quokkaism.network.model.InvalidRequestResponse
 import com.ms.quokkaism.network.model.LoginRequest
 import com.ms.quokkaism.network.model.LoginResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,7 +33,17 @@ class LoginViewModel : ViewModel() {
             ?.subscribe({
                 _login.value = it
             },{
-                _login_error.value = GeneralResponse(it.message)
+                it.getErrorHttpModel(InvalidRequestResponse::class.java)?.let {
+                    it.getFirstMessage()?.let { message ->
+                        _login_error.value = GeneralResponse(message)
+                    }
+                } ?: kotlin.run {
+                    if(it.isUnauthorizedError()) {
+                        _login_error.value = GeneralResponse(messageResId = R.string.username_or_password_is_incorrect)
+                    } else {
+                        _login_error.value = GeneralResponse(messageResId = R.string.error_on_connecting_to_server)
+                    }
+                }
             })
 
     }

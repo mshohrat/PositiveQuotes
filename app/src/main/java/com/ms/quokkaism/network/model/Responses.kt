@@ -106,3 +106,19 @@ data class ReceivedQuote(
     @SN("author")
     val author: String? = null
 )
+
+data class InvalidRequestResponse(
+    @SN("message")
+    val message: String?,
+    @SN("errors")
+    val invalidRequestData: InvalidRequestData?
+)
+
+data class InvalidRequestData(
+    @SN("email")
+    val emailErrors : List<String?>?,
+    @SN("password")
+    val passwordErrors : List<String?>?,
+    @SN("name")
+    val nameErrors : List<String?>?
+)

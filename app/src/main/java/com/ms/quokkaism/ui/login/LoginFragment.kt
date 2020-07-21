@@ -56,7 +56,13 @@ class LoginFragment : BaseFragment() {
         })
         viewModel.login_error.observe(viewLifecycleOwner, Observer {
             dismissDialog(loadingDialog)
-            Toast.makeText(activity,it?.message,Toast.LENGTH_LONG).show()
+            it?.message?.takeIf { it.isNotEmpty() }?.let { message ->
+                Toast.makeText(activity,message, Toast.LENGTH_LONG).show()
+            } ?: kotlin.run {
+                it?.messageResId?.let {messageResId ->
+                    Toast.makeText(activity,messageResId, Toast.LENGTH_LONG).show()
+                }
+            }
         })
     }
 
