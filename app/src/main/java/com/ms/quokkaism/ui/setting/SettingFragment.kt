@@ -100,7 +100,7 @@ class SettingFragment : BaseFragment(), SettingTimeAdapter.OnItemClickListener {
     private fun reScheduleNotification(profileSetting: ProfileSetting) {
 
         val intent = Intent(App.appContext,NotificationPublisher::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(activity,
+        val pendingIntent = PendingIntent.getBroadcast(App.appContext,
             NotificationPublisher.INTENT_REQUEST_CODE,intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
         val futureInMillis = System.currentTimeMillis() + (profileSetting.interval.toLong() * 3600000)

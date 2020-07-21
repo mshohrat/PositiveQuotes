@@ -115,7 +115,7 @@ class NotificationPublisher : BroadcastReceiver() {
     private fun reScheduleNotification(context: Context,profileSetting: ProfileSetting) {
 
         val intent = Intent(App.appContext,NotificationPublisher::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context,
+        val pendingIntent = PendingIntent.getBroadcast(App.appContext,
             INTENT_REQUEST_CODE,intent,
             PendingIntent.FLAG_UPDATE_CURRENT)
         val futureInMillis = System.currentTimeMillis() + (profileSetting.interval.toLong() * 3600000)

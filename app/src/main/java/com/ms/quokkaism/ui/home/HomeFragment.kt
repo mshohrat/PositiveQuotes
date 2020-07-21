@@ -106,7 +106,7 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
             val setting = Hawk.get<ProfileSetting?>(ProfileSetting.PROFILE_SETTING_KEY)
             setting?.let {
                 val intent = Intent(App.appContext,NotificationPublisher::class.java)
-                val pendingIntent = PendingIntent.getBroadcast(activity,NotificationPublisher.INTENT_REQUEST_CODE,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+                val pendingIntent = PendingIntent.getBroadcast(App.appContext,NotificationPublisher.INTENT_REQUEST_CODE,intent,PendingIntent.FLAG_UPDATE_CURRENT)
                 val futureInMillis = System.currentTimeMillis() + (it.interval.toLong() * 3600000)
                 val alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
                 when {
