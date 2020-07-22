@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
     }
 
-    private fun isSideMenuOpened() : Boolean
+    fun isSideMenuOpened() : Boolean
     {
         return main_side_menu_frame?.visibility == View.VISIBLE
     }

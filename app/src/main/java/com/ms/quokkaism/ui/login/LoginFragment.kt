@@ -11,6 +11,7 @@ import com.ms.quokkaism.App
 import com.ms.quokkaism.R
 import com.ms.quokkaism.extension.*
 import com.ms.quokkaism.model.Profile
+import com.ms.quokkaism.model.ProfileSetting
 import com.ms.quokkaism.ui.base.BaseFragment
 import com.ms.quokkaism.util.LoadingDialog
 
@@ -50,6 +51,7 @@ class LoginFragment : BaseFragment() {
                     uuid = it.uuid
                 )
                 Hawk.put(Profile.PROFILE_KEY, profile)
+                Hawk.put(ProfileSetting.PROFILE_SETTING_KEY,false)
                 reloadSideMenu()
                 navigate(R.id.login_to_splash)
             }

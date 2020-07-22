@@ -118,14 +118,20 @@ class SplashFragment : BaseFragment() {
             if(it.isComplete && it.isSuccessful)
             {
                 it.result?.token?.takeIf { it.isNotEmpty() }?.let { token ->
-                    ApiServiceGenerator.getApiService.registerFbToken(RegisterFbTokenRequest(token))
-                        ?.subscribeOn(Schedulers.io())
-                        ?.observeOn(AndroidSchedulers.mainThread())
-                        ?.subscribe ({
+                    if(isUserLoggedIn()) {
+                        ApiServiceGenerator.getApiService.registerFbToken(
+                            RegisterFbTokenRequest(
+                                token
+                            )
+                        )
+                            ?.subscribeOn(Schedulers.io())
+                            ?.observeOn(AndroidSchedulers.mainThread())
+                            ?.subscribe({
 
-                        },{
+                            }, {
 
-                        })
+                            })
+                    }
                 }
             }
             navigateToHome()

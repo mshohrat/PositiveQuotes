@@ -10,6 +10,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.ms.quokkaism.db.AppDatabase
 import com.ms.quokkaism.db.model.Quote
+import com.ms.quokkaism.extension.isUserLoggedIn
 import com.ms.quokkaism.model.ProfileSetting
 import com.ms.quokkaism.network.base.ApiServiceGenerator
 import com.ms.quokkaism.network.model.ReceivedNotificationData
@@ -46,14 +47,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }
             }
         }
+        scheduleNotification()
     }
 
     override fun onNewToken(token: String) {
         token.let {
-            ApiServiceGenerator.getApiService.registerFbToken(RegisterFbTokenRequest(it))
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe ({},{})
+            if(isUserLoggedIn()) {
+                ApiServiceGenerator.getApiService.registerFbToken(RegisterFbTokenRequest(it))
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe({}, {})
+            }
         }
     }
 

@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@id/home_side_menu_btn"
         android:layout_margin="24dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.ms.quokkaism.view.CustomRecycler
         android:id="@+id/home_quote_rv"
         android:layout_width="match_parent"
         android:layout_height="0dp"

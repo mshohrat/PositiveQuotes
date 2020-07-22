@@ -1,9 +1,11 @@
 package com.ms.quokkaism.db
 
+import android.provider.SyncStateContract.Helpers.update
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
 import com.ms.quokkaism.db.model.Quote
+
 
 @Dao
 interface QuoteDao {
@@ -13,6 +15,15 @@ interface QuoteDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertQuotes(quotesList: List<Quote>)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateQuotes(quotesList: List<Quote>)
+
+    @Transaction
+    suspend fun upsert(quotes: List<Quote>) {
+        insertQuotes(quotes)
+        updateQuotes(quotes)
+    }
 
     @Query("UPDATE quotes SET is_favorite = :isFavorite WHERE id = :id")
     suspend fun updateQuoteIsfavorite(id: Long, isFavorite: Int)

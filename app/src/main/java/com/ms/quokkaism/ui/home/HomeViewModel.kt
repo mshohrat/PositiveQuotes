@@ -1,6 +1,7 @@
 package com.ms.quokkaism.ui.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.*
 import com.ms.quokkaism.db.AppDatabase
 import com.ms.quokkaism.db.model.LikeAction

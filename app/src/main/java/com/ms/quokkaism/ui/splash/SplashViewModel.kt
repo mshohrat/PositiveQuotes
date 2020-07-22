@@ -23,25 +23,16 @@ class SplashViewModel : ViewModel() {
     private val _config_error = MutableLiveData<GeneralResponse?>()
     val config_error : LiveData<GeneralResponse?> = _config_error
 
-    private var isLoginRequestRunning = false
-    private var isConfigRequestRunning = false
-
     @SuppressLint("CheckResult")
     fun refreshConfig() {
         if(isDeviceOnline()) {
-            if(isConfigRequestRunning) {
-                return
-            }
-            isConfigRequestRunning = true
             ApiServiceGenerator.getApiService.getConfig()
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe({
-                    isConfigRequestRunning = false
                     Hawk.put(UserConfig.USER_CONFIG_KEY, UserConfig(it?.isUserActive ?: false))
                     _config.value = it
                 }, {
-                    isConfigRequestRunning = false
                     _config_error.value = GeneralResponse(it.message)
                 })
         }
@@ -59,20 +50,14 @@ class SplashViewModel : ViewModel() {
 
     @SuppressLint("CheckResult")
     fun loginAsGuest() {
-        if(isLoginRequestRunning) {
-            return
-        }
-        isLoginRequestRunning = true
         ApiServiceGenerator.getApiService.loginAsGuest(
             LoginAsGuestRequest(UUID.randomUUID().toString())
         )
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe({
-                isLoginRequestRunning = false
                 _login_as_guest.value = it
             },{
-                isLoginRequestRunning = false
                 _login_as_guest_error.value = GeneralResponse(it.message)
             })
     }
