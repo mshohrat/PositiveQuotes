@@ -49,6 +49,7 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        initRecycler()
         subscribeToViewModel()
         subscribeToViewEvents()
         scheduleNotification()

@@ -36,7 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         val MIGRATION_1_2: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE quotes ADD COLUMN modified_at LONG")
+                database.execSQL("ALTER TABLE quotes ADD COLUMN modified_at INTEGER NOT NULL DEFAULT ${System.currentTimeMillis() - 86400000}")
             }
 
         }
