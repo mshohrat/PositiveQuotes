@@ -3,6 +3,8 @@ package com.ms.quokkaism.ui.home
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.ms.quokkaism.db.AppDatabase
 import com.ms.quokkaism.db.model.LikeAction
 import com.ms.quokkaism.db.model.Quote
@@ -22,9 +24,22 @@ class HomeViewModel : ViewModel() {
 
     val quotesFetched = MutableLiveData<Boolean>(false)
 
-    var lastReadQuotes: LiveData<List<Quote?>?>? = AppDatabase.getAppDataBase()?.quoteDao()?.getLastReadQuotes()
+    lateinit var lastReadQuotes: LiveData<PagedList<Quote?>>
 
     init {
+        val factory = AppDatabase.getAppDataBase()?.quoteDao()?.getLastReadQuotes()
+        factory?.let {
+            val config = PagedList.Config.Builder()
+                .setInitialLoadSizeHint(20)
+                .setPageSize(10)
+                .setPrefetchDistance(5)
+                .setEnablePlaceholders(false)
+                .build()
+            val pagedListBuilder: LivePagedListBuilder<Int, Quote?> = LivePagedListBuilder<Int, Quote?>(it, config)
+            lastReadQuotes = pagedListBuilder.build()
+        } ?: kotlin.run {
+            lastReadQuotes = MutableLiveData()
+        }
         handleFirstUnreadQuotesCount()
         handleSyncActionsWithServer()
     }

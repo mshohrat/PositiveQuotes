@@ -55,11 +55,11 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
     }
 
     private fun subscribeToViewModel() {
-        homeViewModel.lastReadQuotes?.observe(viewLifecycleOwner, Observer {
+        homeViewModel.lastReadQuotes.observe(viewLifecycleOwner, Observer {
             it?.takeIf { it.isNotEmpty() } ?.let {
                 home_welcome_tv?.visibility = View.GONE
                 home_quote_rv?.visibility = View.VISIBLE
-                initRecycler(it)
+                quoteFullscreenAdapter?.submitList(it)
             } ?: kotlin.run {
                 home_quote_rv?.visibility = View.GONE
                 home_welcome_tv?.visibility = View.VISIBLE
@@ -80,14 +80,12 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
         })
     }
 
-    private fun initRecycler(quotesList: List<Quote?>) {
-        quoteFullscreenAdapter?.submitItemList(quotesList) ?: kotlin.run {
-            quoteFullscreenAdapter = QuoteFullscreenAdapter(quotesList, this)
-            home_quote_rv?.layoutManager =
-                LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-            home_quote_rv?.adapter = quoteFullscreenAdapter
-            PagerSnapHelper().attachToRecyclerView(home_quote_rv)
-        }
+    private fun initRecycler() {
+        quoteFullscreenAdapter = QuoteFullscreenAdapter(this)
+        home_quote_rv?.layoutManager =
+            LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+        home_quote_rv?.adapter = quoteFullscreenAdapter
+        PagerSnapHelper().attachToRecyclerView(home_quote_rv)
     }
 
     private fun subscribeToViewEvents() {

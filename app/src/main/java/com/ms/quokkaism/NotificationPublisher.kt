@@ -1,9 +1,6 @@
 package com.ms.quokkaism
 
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -64,6 +61,7 @@ class NotificationPublisher : BroadcastReceiver() {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setShowWhen(true)
                         .setAutoCancel(true)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 
                     val resultIntent = Intent(context, MainActivity::class.java)

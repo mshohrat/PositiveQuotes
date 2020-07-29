@@ -14,7 +14,9 @@ data class Quote(
     @ColumnInfo(name = "is_read")
     val isRead : Int = 0,
     @ColumnInfo(name = "is_favorite")
-    var isFavorite : Int = 0
+    var isFavorite : Int = 0,
+    @ColumnInfo(name = "modified_at")
+    val modifiedAt: Long = System.currentTimeMillis()
 ) {
     fun isLiked(): Boolean {
         return isFavorite == 1
