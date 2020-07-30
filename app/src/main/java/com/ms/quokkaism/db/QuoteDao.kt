@@ -47,4 +47,7 @@ interface QuoteDao {
 
     @Query("SELECT * FROM quotes WHERE is_read == 0 ORDER BY modified_at ASC LIMIT 10")
     suspend fun getFirstUnreadQuotes(): List<Quote?>?
+
+    @Query("SELECT * FROM quotes WHERE is_read == 1 AND text LIKE :query ORDER BY modified_at ASC")
+    fun searchQuotes(query: String?): DataSource.Factory<Int,Quote?>
 }

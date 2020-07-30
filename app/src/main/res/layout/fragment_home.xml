@@ -35,6 +35,42 @@
         android:background="?selectableItemBackground"
         app:srcCompat="@drawable/ic_menu"/>
 
+    <FrameLayout
+        android:id="@+id/home_search_box"
+        android:layout_width="@dimen/button_height_min"
+        android:layout_height="@dimen/button_height_min"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape_rounded_25dp_white">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/home_search_et"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?textAppearanceCaption"
+            android:hint="@string/search"
+            android:visibility="invisible"
+            android:textColorHint="@color/gray"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center_vertical|right"
+            android:layout_marginEnd="@dimen/button_height_min"
+            android:paddingEnd="0dp"
+            android:paddingStart="16dp"
+            android:background="@null"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/home_search_btn"
+            android:layout_width="@dimen/button_height_min"
+            android:layout_height="@dimen/button_height_min"
+            android:layout_gravity="center_vertical|end"
+            android:scaleType="centerInside"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_search"/>
+
+    </FrameLayout>
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/home_welcome_tv"
         android:layout_width="wrap_content"
@@ -42,6 +78,20 @@
         android:textAppearance="?textAppearanceHeadline1"
         android:text="@string/welcome"
         android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_side_menu_btn"
+        android:layout_margin="24dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/home_no_result_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceHeadline1"
+        android:text="@string/no_result"
+        android:gravity="center"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,46 +106,33 @@
         app:layout_constraintTop_toBottomOf="@id/home_side_menu_btn"
         android:visibility="gone"/>
 
-<!--    <androidx.constraintlayout.widget.Group-->
-<!--        android:id="@+id/home_bottom_action_group"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:constraint_referenced_ids="item_quote_fullscreen_share_btn,item_quote_fullscreen_copy_btn" />-->
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/home_previous_btn"
+        android:layout_width="@dimen/button_height_min"
+        android:layout_height="@dimen/button_height_min"
+        app:srcCompat="@drawable/ic_arrow_left_primary"
+        android:background="@null"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-<!--    <androidx.appcompat.widget.AppCompatImageButton-->
-<!--        android:id="@+id/item_quote_fullscreen_share_btn"-->
-<!--        android:layout_width="@dimen/button_height_min"-->
-<!--        android:layout_height="@dimen/button_height_min"-->
-<!--        android:background="?selectableItemBackground"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/item_quote_fullscreen_copy_btn"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintHorizontal_chainStyle="packed"-->
-<!--        app:srcCompat="@drawable/ic_share"-->
-<!--        android:layout_marginEnd="12dp"-->
-<!--        android:layout_marginBottom="16dp"/>-->
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/home_next_btn"
+        android:layout_width="@dimen/button_height_min"
+        android:layout_height="@dimen/button_height_min"
+        app:srcCompat="@drawable/ic_arrow_right_primary"
+        android:background="@null"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-<!--    <androidx.appcompat.widget.AppCompatImageButton-->
-<!--        android:id="@+id/item_quote_fullscreen_copy_btn"-->
-<!--        android:layout_width="@dimen/button_height_min"-->
-<!--        android:layout_height="@dimen/button_height_min"-->
-<!--        android:background="?selectableItemBackground"-->
-<!--        app:srcCompat="@drawable/ic_copy"-->
-<!--        android:layout_marginEnd="12dp"-->
-<!--        app:layout_constraintStart_toEndOf="@id/item_quote_fullscreen_share_btn"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/item_quote_fullscreen_like_btn"-->
-<!--        app:layout_constraintTop_toTopOf="@id/item_quote_fullscreen_share_btn"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/item_quote_fullscreen_share_btn" />-->
-
-<!--    <androidx.appcompat.widget.AppCompatImageButton-->
-<!--        android:id="@+id/item_quote_fullscreen_like_btn"-->
-<!--        android:layout_width="@dimen/button_height_min"-->
-<!--        android:layout_height="@dimen/button_height_min"-->
-<!--        android:background="?selectableItemBackground"-->
-<!--        app:srcCompat="@drawable/ic_like"-->
-<!--        app:layout_constraintStart_toEndOf="@id/item_quote_fullscreen_copy_btn"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="@id/item_quote_fullscreen_share_btn"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/item_quote_fullscreen_share_btn" />-->
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/home_arrow_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="home_next_btn,home_previous_btn"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

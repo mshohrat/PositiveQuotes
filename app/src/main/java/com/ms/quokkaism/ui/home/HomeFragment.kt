@@ -1,5 +1,7 @@
 package com.ms.quokkaism.ui.home
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.ClipData
@@ -12,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,6 +40,9 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
     private lateinit var homeViewModel: HomeViewModel
     private var loadingDialog: LoadingDialog? = null
     private var quoteFullscreenAdapter: QuoteFullscreenAdapter? = null
+    private var layoutManager: LinearLayoutManager? = null
+    private var pagerSnapHelper: PagerSnapHelper? = null
+    private var isAllEmpty = true
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -49,6 +55,7 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        homeViewModel.searchQueryText.value = ""
         initRecycler()
         subscribeToViewModel()
         subscribeToViewEvents()
@@ -59,11 +66,20 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
         homeViewModel.lastReadQuotes.observe(viewLifecycleOwner, Observer {
             it?.takeIf { it.isNotEmpty() } ?.let {
                 home_welcome_tv?.visibility = View.GONE
+                home_no_result_tv?.visibility = View.GONE
                 home_quote_rv?.visibility = View.VISIBLE
+                home_arrow_group?.visibility = View.VISIBLE
+                isAllEmpty = false
                 quoteFullscreenAdapter?.submitList(it)
             } ?: kotlin.run {
                 home_quote_rv?.visibility = View.GONE
-                home_welcome_tv?.visibility = View.VISIBLE
+                home_arrow_group?.visibility = View.GONE
+                if(isAllEmpty) {
+                    home_welcome_tv?.visibility = View.VISIBLE
+                }
+                else {
+                    home_no_result_tv?.visibility = View.VISIBLE
+                }
             }
         })
         homeViewModel.syncIsRunning.observe(viewLifecycleOwner, Observer {
@@ -83,15 +99,129 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
 
     private fun initRecycler() {
         quoteFullscreenAdapter = QuoteFullscreenAdapter(this)
-        home_quote_rv?.layoutManager =
-            LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+        layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+        home_quote_rv?.layoutManager = layoutManager
         home_quote_rv?.adapter = quoteFullscreenAdapter
-        PagerSnapHelper().attachToRecyclerView(home_quote_rv)
+        pagerSnapHelper = PagerSnapHelper()
+        pagerSnapHelper?.attachToRecyclerView(home_quote_rv)
     }
 
     private fun subscribeToViewEvents() {
         home_side_menu_btn?.setOnClickListener {
             toggleSideMenu()
+        }
+
+        home_search_et?.doOnTextChanged { text, start, before, count ->
+            text?.let {
+                homeViewModel.searchQueryText.value = "%$it%"
+            } ?: kotlin.run {
+                homeViewModel.searchQueryText.value = ""
+            }
+        }
+
+        home_search_btn?.setOnClickListener {
+            if(isSearchBoxCollapsed()) {
+                expandSearchBox()
+            } else {
+                collapseSearchBox()
+            }
+        }
+
+        home_next_btn?.setOnClickListener {
+            showNext()
+        }
+
+        home_previous_btn?.setOnClickListener {
+            showPrevious()
+        }
+    }
+
+    private fun showNext() {
+        layoutManager?.let {
+            val pos = it.findLastCompletelyVisibleItemPosition()
+            try {
+                home_quote_rv?.smoothScrollToPosition(pos+1)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun showPrevious() {
+        layoutManager?.let {
+            val pos = it.findLastCompletelyVisibleItemPosition()
+            try {
+                home_quote_rv?.smoothScrollToPosition(pos-1)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun expandSearchBox() {
+        activity?.let { ctx ->
+            home_search_box?.let { box ->
+                val startWidth = box.measuredWidth
+                val endWidth = ctx.resources.getDimensionPixelSize(R.dimen.home_search_width)
+                val animator = ValueAnimator.ofInt(startWidth,endWidth)
+                animator.duration = 400
+                animator.addUpdateListener {
+                    val value = it.animatedValue as Int
+                    val params = box.layoutParams
+                    params.width = value
+                    box.layoutParams = params
+                }
+                animator.addListener(object : Animator.AnimatorListener{
+                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationEnd(p0: Animator?) {
+                        home_search_et?.visibility = View.VISIBLE
+                    }
+                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator?) {}
+
+                })
+                animator.start()
+            }
+        }
+    }
+
+    private fun collapseSearchBox() {
+        activity?.let { ctx ->
+            home_search_box?.let { box ->
+                val startWidth = box.measuredWidth
+                val endWidth = ctx.resources.getDimensionPixelSize(R.dimen.button_height_min)
+                val animator = ValueAnimator.ofInt(startWidth,endWidth)
+                animator.duration = 400
+                animator.addUpdateListener {
+                    val value = it.animatedValue as Int
+                    val params = box.layoutParams
+                    params.width = value
+                    box.layoutParams = params
+                }
+                animator.addListener(object : Animator.AnimatorListener{
+                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationEnd(p0: Animator?) {}
+                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator?) {
+                        home_search_et?.visibility = View.INVISIBLE
+                    }
+
+                })
+                animator.start()
+            }
+        }
+    }
+
+    private fun isSearchBoxCollapsed(): Boolean {
+        activity?.let { ctx ->
+            home_search_box?.let { box ->
+                val collapsedWidth = ctx.resources.getDimensionPixelSize(R.dimen.button_height_min)
+                return box.measuredWidth == collapsedWidth
+            } ?: kotlin.run {
+                return true
+            }
+        } ?: kotlin.run {
+            return true
         }
     }
 
@@ -153,6 +283,15 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
         dismissDialog(loadingDialog)
         quoteFullscreenAdapter = null
         super.onDestroyView()
+    }
+
+    override fun onBackPress(): Boolean {
+        return if(!isSearchBoxCollapsed()) {
+            collapseSearchBox()
+            true
+        } else {
+            super.onBackPress()
+        }
     }
 
 }

@@ -33,5 +33,6 @@
     <dimen name="card_corner_radius_default">12dp</dimen>
     <dimen name="card_elevation_default">4dp</dimen>
     <dimen name="card_setting_time_item_size">68dp</dimen>
+    <dimen name="home_search_width">250dp</dimen>
 
 </resources>

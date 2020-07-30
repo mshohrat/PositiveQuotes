@@ -1,7 +1,6 @@
 package com.ms.quokkaism.ui.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -18,27 +17,42 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
 class HomeViewModel : ViewModel() {
 
     val syncIsRunning = MutableLiveData<Boolean>()
 
     val quotesFetched = MutableLiveData<Boolean>(false)
 
-    lateinit var lastReadQuotes: LiveData<PagedList<Quote?>>
+    var searchQueryText = MutableLiveData<String>()
+
+    var lastReadQuotes: LiveData<PagedList<Quote?>>
 
     init {
-        val factory = AppDatabase.getAppDataBase()?.quoteDao()?.getLastReadQuotes()
-        factory?.let {
-            val config = PagedList.Config.Builder()
-                .setInitialLoadSizeHint(20)
-                .setPageSize(10)
-                .setPrefetchDistance(5)
-                .setEnablePlaceholders(false)
-                .build()
-            val pagedListBuilder: LivePagedListBuilder<Int, Quote?> = LivePagedListBuilder<Int, Quote?>(it, config)
-            lastReadQuotes = pagedListBuilder.build()
-        } ?: kotlin.run {
-            lastReadQuotes = MutableLiveData()
+        val config = PagedList.Config.Builder()
+            .setInitialLoadSizeHint(20)
+            .setPageSize(10)
+            .setPrefetchDistance(5)
+            .setEnablePlaceholders(false)
+            .build()
+        lastReadQuotes = Transformations.switchMap(searchQueryText) { input ->
+            if (input == null || input == "" || input == "%%") {
+                val factory = AppDatabase.getAppDataBase()?.quoteDao()?.getLastReadQuotes()
+                factory?.let {
+
+                    return@switchMap LivePagedListBuilder<Int, Quote?>(it, config).build()
+                } ?: kotlin.run {
+                    return@switchMap MutableLiveData<PagedList<Quote?>>()
+                }
+            } else {
+                val factory = AppDatabase.getAppDataBase()?.quoteDao()?.searchQuotes(input)
+                factory?.let {
+
+                    return@switchMap LivePagedListBuilder<Int, Quote?>(it, config).build()
+                } ?: kotlin.run {
+                    return@switchMap MutableLiveData<PagedList<Quote?>>()
+                }
+            }
         }
         handleFirstUnreadQuotesCount()
         handleSyncActionsWithServer()
