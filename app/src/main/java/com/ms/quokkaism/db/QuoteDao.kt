@@ -20,8 +20,15 @@ interface QuoteDao {
     @Transaction
     suspend fun upsert(quotes: List<Quote>) {
         insertQuotes(quotes)
-        updateQuotes(quotes)
+        quotes.forEach {
+            it.id?.let { id ->
+                updateQuote(id,it.text,it.author,it.isFavorite,it.isRead)
+            }
+        }
     }
+
+    @Query("UPDATE quotes SET text = :text,author = :author,is_favorite = :isFavorite,is_read = :isRead WHERE id = :id")
+    suspend fun updateQuote(id: Long, text: String,author: String?, isFavorite: Int,isRead: Int)
 
     @Query("UPDATE quotes SET is_favorite = :isFavorite WHERE id = :id")
     suspend fun updateQuoteIsfavorite(id: Long, isFavorite: Int)

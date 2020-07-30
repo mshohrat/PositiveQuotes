@@ -5,8 +5,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
-final VERSION_NAME = "1.1.0"
-final VERSION_CODE = 11
+final VERSION_NAME = "1.1.1"
+final VERSION_CODE = 12
 
 final retrofitVersion = "2.6.4"
 final okhttpVersion = "3.12.8"
