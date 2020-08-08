@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import com.ms.quokkaism.db.AppDatabase
+import com.ms.quokkaism.extension.isDeviceOnline
 import com.ms.quokkaism.model.ProfileSetting
 import com.orhanobut.hawk.Hawk
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,7 @@ class NotificationPublisher : BroadcastReceiver() {
                 Hawk.put(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY, false)
             }
         }
+        handleFirstUnreadQuotesCount(context)
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 val lastUnreadQuote =
@@ -82,6 +84,20 @@ class NotificationPublisher : BroadcastReceiver() {
 
                     quote.id?.let {
                         AppDatabase.getAppDataBase()?.quoteDao()?.updateQuoteIsRead(it, 1)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleFirstUnreadQuotesCount(context: Context) {
+        if(isDeviceOnline()) {
+            GlobalScope.launch {
+                withContext(Dispatchers.IO) {
+                    val firstUnreadQuotes =
+                        AppDatabase.getAppDataBase()?.quoteDao()?.getFirstUnreadQuotes()
+                    if (firstUnreadQuotes == null || firstUnreadQuotes.size < 10) {
+                        context.startService(Intent(context,FetchQuotesService::class.java))
                     }
                 }
             }
