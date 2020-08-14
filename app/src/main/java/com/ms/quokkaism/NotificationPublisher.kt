@@ -97,7 +97,7 @@ class NotificationPublisher : BroadcastReceiver() {
                     val firstUnreadQuotes =
                         AppDatabase.getAppDataBase()?.quoteDao()?.getFirstUnreadQuotes()
                     if (firstUnreadQuotes == null || firstUnreadQuotes.size < 10) {
-                        context.startService(Intent(context,FetchQuotesService::class.java))
+                        context.startForegroundService(Intent(context,FetchQuotesService::class.java))
                     }
                 }
             }
