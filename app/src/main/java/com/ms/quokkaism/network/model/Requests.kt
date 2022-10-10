@@ -36,7 +36,7 @@ data class RefreshTokenRequest(
     @SN("client_id")
     val clientId: String = BuildConfig.CLIENT_ID,
     @SN("client_secret")
-    val clientSecret: String = BuildConfig.CLIENT_ID
+    val clientSecret: String = BuildConfig.CLIENT_SECRET
 )
 
 data class LoginAsGuestRequest(

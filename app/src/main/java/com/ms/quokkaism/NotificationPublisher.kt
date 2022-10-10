@@ -15,10 +15,7 @@ import com.ms.quokkaism.db.AppDatabase
 import com.ms.quokkaism.extension.isDeviceOnline
 import com.ms.quokkaism.model.ProfileSetting
 import com.orhanobut.hawk.Hawk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 
 class NotificationPublisher : BroadcastReceiver() {
@@ -73,7 +70,7 @@ class NotificationPublisher : BroadcastReceiver() {
                     stackBuilder.addNextIntent(resultIntent)
 
                     val resultPendingIntent = stackBuilder.getPendingIntent(
-                        0, PendingIntent.FLAG_UPDATE_CURRENT
+                        0, if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
                     )
                     notificationBuilder.setContentIntent(resultPendingIntent)
 
@@ -97,7 +94,7 @@ class NotificationPublisher : BroadcastReceiver() {
                     val firstUnreadQuotes =
                         AppDatabase.getAppDataBase()?.quoteDao()?.getFirstUnreadQuotes()
                     if (firstUnreadQuotes == null || firstUnreadQuotes.size < 10) {
-                        context.startForegroundService(Intent(context,FetchQuotesService::class.java))
+                        context.startService(Intent(context,FetchQuotesService::class.java))
                     }
                 }
             }
@@ -131,7 +128,10 @@ class NotificationPublisher : BroadcastReceiver() {
         val intent = Intent(App.appContext,NotificationPublisher::class.java)
         val pendingIntent = PendingIntent.getBroadcast(App.appContext,
             INTENT_REQUEST_CODE,intent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                PendingIntent.FLAG_MUTABLE
+            else
+                PendingIntent.FLAG_UPDATE_CURRENT)
         val futureInMillis = System.currentTimeMillis() + (profileSetting.interval.toLong() * 3600000)
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
@@ -144,11 +144,8 @@ class NotificationPublisher : BroadcastReceiver() {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
                 alarmManager?.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
             }
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                alarmManager?.setExact(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
-            }
             else -> {
-                alarmManager?.set(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
+                alarmManager?.setExact(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
             }
         }
         Hawk.put(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY,true)

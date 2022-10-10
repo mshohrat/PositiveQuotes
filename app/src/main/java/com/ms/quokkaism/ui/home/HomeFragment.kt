@@ -235,18 +235,16 @@ class HomeFragment : BaseFragment(), QuoteFullscreenAdapter.OnItemClickListener 
             val setting = Hawk.get<ProfileSetting?>(ProfileSetting.PROFILE_SETTING_KEY)
             setting?.let {
                 val intent = Intent(App.appContext,NotificationPublisher::class.java)
-                val pendingIntent = PendingIntent.getBroadcast(App.appContext,NotificationPublisher.INTENT_REQUEST_CODE,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+                val pendingIntent = PendingIntent.getBroadcast(App.appContext,NotificationPublisher.INTENT_REQUEST_CODE,intent
+                    ,if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_UPDATE_CURRENT)
                 val futureInMillis = System.currentTimeMillis() + (it.interval.toLong() * 3600000)
                 val alarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
                         alarmManager?.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
                     }
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
-                        alarmManager?.setExact(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
-                    }
                     else -> {
-                        alarmManager?.set(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
+                        alarmManager?.setExact(AlarmManager.RTC_WAKEUP,futureInMillis,pendingIntent)
                     }
                 }
                 Hawk.put(ProfileSetting.NOTIFICATIONS_ARE_SET_KEY,true)

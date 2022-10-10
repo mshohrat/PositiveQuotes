@@ -176,10 +176,14 @@ fun isDeviceOnline(): Boolean {
 val Fragment.isGooglePlayServicesAvailable: Boolean
     get() {
         try {
-            val status = GoogleApiAvailability.getInstance()
-                .isGooglePlayServicesAvailable(activity)
-            if (status == ConnectionResult.SUCCESS) {
-                return true
+            activity?.let { ctx ->
+                val status = GoogleApiAvailability.getInstance()
+                    .isGooglePlayServicesAvailable(ctx)
+                if (status == ConnectionResult.SUCCESS) {
+                    return true
+                }
+            } ?: kotlin.run {
+                return false
             }
         } catch (e: Exception) {
         }

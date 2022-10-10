@@ -7,10 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.ms.quokkaism.extension.isDeviceOnline
 import com.ms.quokkaism.model.UserConfig
 import com.ms.quokkaism.network.base.ApiServiceGenerator
-import com.ms.quokkaism.network.model.ConfigResponse
-import com.ms.quokkaism.network.model.GeneralResponse
-import com.ms.quokkaism.network.model.LoginAsGuestRequest
-import com.ms.quokkaism.network.model.LoginResponse
+import com.ms.quokkaism.network.model.*
 import com.orhanobut.hawk.Hawk
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
